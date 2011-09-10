@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<zk>
+
+	<!-- ZK logging -->
+	<log>
+		<log-base></log-base>
+	</log>
+
+	<!-- Language file location -->
+	<library-property>
+		<name>org.zkoss.util.label.web.location</name>
+		<value>/labels/language.properties</value>
+	</library-property>
+
+	<!-- Default language file -->
+	<!-- <library-property> <name>org.zkoss.web.preferred.locale</name> <value>vi</value> </library-property> -->
+
+	<!-- Default language charset -->
+	<library-property>
+		<name>org.zkoss.util.label.web.charset</name>
+		<value>UTF-8</value>
+	</library-property>
+
+	<!-- Display message when session is timeout -->
+	<session-config>
+		<device-type>ajax</device-type>
+		<!-- <timeout-message>label:timeout.message</timeout-message> -->
+		<timeout-uri></timeout-uri>
+		<!-- Session time out by seconds -->
+		<session-timeout>3600</session-timeout>
+		<!-- Define session automatic timeout when user doesn't do anything -->
+		<automatic-timeout />
+	</session-config>
+
+	<!-- My request listener -->
+	<listener>
+		<listener-class>com.lkc.listeners.MyListener</listener-class>
+	</listener>
+
+	<!-- Error handler -->
+	<error-page>
+		<exception-type>java.lang.Throwable</exception-type>
+		<location>/error/error.zul</location>
+	</error-page>
+</zk>
