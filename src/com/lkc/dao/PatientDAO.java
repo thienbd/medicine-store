@@ -49,4 +49,18 @@ public class PatientDAO extends GenericDAO<Patient> {
 		}
 		return result;
 	}
+
+	public List<String> loadFullName() {
+		HibernateTemplate hibernateTemplate = getHibernateTemplate();
+		List<String> result = hibernateTemplate.execute(new HibernateCallback<List<String>>() {
+			@Override
+			public List<String> doInHibernate(Session session) throws HibernateException, SQLException {
+				String field = "fullName";
+				Query query = session.createQuery("select " + field + " from " + entityBeanType.getSimpleName() + " b order by " + field
+						+ " asc");
+				return query.list();
+			}
+		});
+		return result;
+	}
 }

@@ -47,7 +47,7 @@ public class InputPatientComposer extends GenericAutowireComposer {
 	}
 
 	private void addListener() {
-		List<Patient> listPatients = patientDAO.load();
+		List<String> listPatients = patientDAO.loadFullName();
 		fullNameCombobox.setModel(new SimpleListModel(listPatients));
 	}
 }
