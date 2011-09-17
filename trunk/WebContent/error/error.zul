@@ -12,9 +12,9 @@
 		<vbox>
 			<label value="${c:l('error.message')}" />
 			<hbox style="margin-left:auto; margin-right:auto">
-				<button label="${c:l('error.continue')}" onClick="spaceOwner.detach()" />
-				<button label="${c:l('error.reload')}" onClick="Executions.sendRedirect(null)" />
-				<button label="${c:l('error.home')}" onClick="redirect()" />
+				<button label="${c:l('continue')}" onClick="spaceOwner.detach()" />
+				<button label="${c:l('reload')}" onClick="Executions.sendRedirect(null)" />
+				<button label="${c:l('home')}" onClick="redirect()" />
 			</hbox>
 		</vbox>
 	</window>

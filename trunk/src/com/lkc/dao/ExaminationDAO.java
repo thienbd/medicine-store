@@ -6,4 +6,5 @@ public class ExaminationDAO extends GenericDAO<Examination> {
 	public ExaminationDAO() {
 		super(Examination.class);
 	}
+
 }

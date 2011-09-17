@@ -13,9 +13,9 @@
 		<vbox>
 			<label value="${c:l('error.message404')}" />
 			<hbox style="margin-left:auto; margin-right:auto">
-				<button label="${c:l('error.reload')}"
+				<button label="${c:l('reload')}"
 					onClick="Executions.sendRedirect(null)" />
-				<button label="${c:l('error.home')}"
+				<button label="${c:l('home')}"
 					onClick="redirect()" />
 			</hbox>
 		</vbox>
