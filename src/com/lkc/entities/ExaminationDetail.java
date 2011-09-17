@@ -22,16 +22,18 @@ public class ExaminationDetail implements Serializable {
 	@ManyToOne(fetch = FetchType.EAGER)
 	private Medicine medicine;
 	private int quantity;
+	private String usingGuide;
 
-	public ExaminationDetail(long id, Examination examination, Medicine medicine, int quantity) {
+	public ExaminationDetail(long id, Examination examination, Medicine medicine, int quantity, String usingGuide) {
 		this.id = id;
 		this.examination = examination;
 		this.medicine = medicine;
 		this.quantity = quantity;
+		this.usingGuide = usingGuide;
 	}
 
 	public ExaminationDetail(long id) {
-		this(id, null, null, 0);
+		this(id, null, null, 0, "");
 	}
 
 	public ExaminationDetail() {
@@ -68,6 +70,14 @@ public class ExaminationDetail implements Serializable {
 
 	public void setQuantity(int quantity) {
 		this.quantity = quantity;
+	}
+
+	public String getUsingGuide() {
+		return usingGuide;
+	}
+
+	public void setUsingGuide(String usingGuide) {
+		this.usingGuide = usingGuide;
 	}
 
 }

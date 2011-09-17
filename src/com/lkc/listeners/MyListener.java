@@ -47,7 +47,7 @@ public class MyListener implements RequestInterceptor, EventInterceptor {
 					// Check if session locale is null
 					if (session.getAttribute(Attributes.PREFERRED_LOCALE) == null) {
 						// determine the locale
-						if (cookieValue.equalsIgnoreCase("vi") || cookieValue.equalsIgnoreCase("en")) {
+						if (cookieValue.equalsIgnoreCase("vn") || cookieValue.equalsIgnoreCase("en")) {
 							Locale locale = org.zkoss.util.Locales.getLocale(cookieValue);
 							session.setAttribute(Attributes.PREFERRED_LOCALE, locale);
 						}
@@ -56,7 +56,7 @@ public class MyListener implements RequestInterceptor, EventInterceptor {
 			}
 		}
 		if (session.getAttribute(Attributes.PREFERRED_LOCALE) == null) {
-			session.setAttribute(Attributes.PREFERRED_LOCALE, new Locale(Util.getProperties("defaultLang", "en")));
+			session.setAttribute(Attributes.PREFERRED_LOCALE, new Locale(Util.getProperties("defaultLang", "vn")));
 		}
 	}
 }

@@ -64,4 +64,8 @@ public class Patient implements Serializable {
 		this.address = address;
 	}
 
+	@Override
+	public String toString() {
+		return fullName;
+	}
 }
