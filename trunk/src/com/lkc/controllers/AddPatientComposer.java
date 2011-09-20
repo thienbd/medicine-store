@@ -30,6 +30,7 @@ import com.lkc.dao.ExaminationDAO;
 import com.lkc.dao.PatientDAO;
 import com.lkc.entities.Examination;
 import com.lkc.entities.ExaminationDetail;
+import com.lkc.entities.Medicine;
 import com.lkc.entities.Patient;
 import com.lkc.utils.ComposerUtil;
 import com.lkc.utils.Util;
@@ -48,6 +49,7 @@ public class AddPatientComposer extends GenericAutowireComposer {
 	private Label listMedicineLabel;
 	private Rows medicineListRows;
 	private Panel medicinesPanel;
+	private Button addExaminationDetailButton;
 
 	private DelegatingVariableResolver resolver;
 	private ExaminationDAO examinationDAO;
@@ -55,6 +57,7 @@ public class AddPatientComposer extends GenericAutowireComposer {
 	private Patient patient;
 	private Map<Examination, List<ExaminationDetail>> mapExamination = new HashMap<Examination, List<ExaminationDetail>>();
 	private ComposerUtil composerUtil;
+	private Examination selectedExamination;
 
 	public AddPatientComposer() {
 		resolver = Util.getSpringDelegatingVariableResolver();
@@ -145,7 +148,7 @@ public class AddPatientComposer extends GenericAutowireComposer {
 		composerUtil.removeAllChilds(examRows);
 		Set<Examination> setExaminations = mapExamination.keySet();
 		int i = 0;
-		for (Examination examination : setExaminations) {
+		for (final Examination examination : setExaminations) {
 			Row row = new Row();
 			examRows.appendChild(row);
 			Label nobLabel = new Label("" + (i++));
@@ -165,6 +168,50 @@ public class AddPatientComposer extends GenericAutowireComposer {
 			hbox.appendChild(editButton);
 			hbox.appendChild(deleteButton);
 			row.appendChild(hbox);
+			row.addEventListener(Events.ON_CLICK, new SerializableEventListener() {
+				private static final long serialVersionUID = 1015476361207982066L;
+
+				@Override
+				public void onEvent(Event arg0) throws Exception {
+					listMedicineLabel.setValue(Labels.getLabel("medicine-for-exam",
+							new Object[] { Util.toString(examination.getExamDate(), false) }));
+					selectedExamination = examination;
+					refreshListMedicine();
+				}
+			});
+		}
+	}
+
+	private void refreshListMedicine() {
+		composerUtil.removeAllChilds(medicineListRows);
+		if (selectedExamination == null) {
+			medicinesPanel.setVisible(false);
+		} else {
+			medicinesPanel.setVisible(true);
+			List<ExaminationDetail> details = mapExamination.get(selectedExamination);
+			if (details != null) {
+				int i = 0;
+				for (ExaminationDetail examinationDetail : details) {
+					Medicine medicine = examinationDetail.getMedicine();
+					Row row = new Row();
+					medicineListRows.appendChild(row);
+					Label nobLabel = new Label("" + (++i));
+					row.appendChild(nobLabel);
+					Label nameLabel = new Label(medicine.getName());
+					row.appendChild(nameLabel);
+					Label quantityLabel = new Label("" + examinationDetail.getQuantity());
+					row.appendChild(quantityLabel);
+					Label usingLabel = new Label(examinationDetail.getUsingGuide());
+					row.appendChild(usingLabel);
+					Hbox hbox = new Hbox();
+					Button editButton = new Button(Labels.getLabel("edit"));
+					Button deleteButton = new Button(Labels.getLabel("delete"));
+					deleteButton.setStyle("margin-left:10px");
+					hbox.appendChild(editButton);
+					hbox.appendChild(deleteButton);
+					row.appendChild(hbox);
+				}
+			}
 		}
 	}
 }
