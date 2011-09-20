@@ -25,7 +25,7 @@ public class PatientDAO extends GenericDAO<Patient> {
 				String field = "fullName";
 				Query query = session.createQuery("from " + entityBeanType.getSimpleName() + " b where b." + field
 						+ " like :value order by " + field + " asc");
-				query.setString("value", value + "%");
+				query.setString("value", value);
 				return query.list();
 			}
 		});

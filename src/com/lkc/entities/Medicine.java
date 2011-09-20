@@ -53,4 +53,12 @@ public class Medicine implements Serializable {
 		this.price = price;
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		if (obj != null && obj instanceof Medicine) {
+			Medicine that = (Medicine) obj;
+			return this.id == that.id;
+		}
+		return false;
+	}
 }

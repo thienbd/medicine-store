@@ -19,7 +19,7 @@ import com.lkc.entities.Medicine;
 import com.lkc.utils.MessageUtil;
 import com.lkc.utils.Util;
 
-public class InputMedicineComposer extends GenericAutowireComposer {
+public class AddMedicineComposer extends GenericAutowireComposer {
 
 	private static final long serialVersionUID = 4095913778619814352L;
 
@@ -33,7 +33,7 @@ public class InputMedicineComposer extends GenericAutowireComposer {
 	private MedicineDAO medicineDAO;
 	private MessageUtil messageUtil;
 
-	public InputMedicineComposer() {
+	public AddMedicineComposer() {
 		resolver = (DelegatingVariableResolver) Util.getSpringDelegatingVariableResolver();
 		medicineDAO = (MedicineDAO) resolver.resolveVariable("medicineDAO");
 		messageUtil = (MessageUtil) resolver.resolveVariable("messageUtil");
@@ -91,6 +91,12 @@ public class InputMedicineComposer extends GenericAutowireComposer {
 												+ "\" " + Labels.getLabel("fail-lower"));
 							}
 						}
+
+						@Override
+						public void doAction(Object data) throws Throwable {
+							throw new UnsupportedOperationException();
+						}
+
 					};
 					messageUtil.showConfirm(Labels.getLabel("confirm"),
 							Labels.getLabel("confirm-replace-medicine", new Object[] { medicine.getName() }), replaceActionTrigger);

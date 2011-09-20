@@ -2,7 +2,7 @@
 <?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
 
 <zk xmlns:h="xhtml">
-	<window title="${c:l('input-medicine')}" border="normal" apply="com.lkc.controllers.InputMedicineComposer" position="center"
+	<window title="${c:l('input-medicine')}" border="normal" apply="com.lkc.controllers.AddMedicineComposer" position="center"
 		width="300px" closable="true">
 		<grid>
 			<columns>

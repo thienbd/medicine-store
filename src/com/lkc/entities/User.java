@@ -76,4 +76,12 @@ public class User implements Serializable {
 		this.language = language;
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		if (obj != null && obj instanceof User) {
+			User that = (User) obj;
+			return this.id == that.id;
+		}
+		return false;
+	}
 }

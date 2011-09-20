@@ -122,7 +122,7 @@ public class Util {
 		Session session = Executions.getCurrent().getDesktop().getSession();
 		Locale locale = (Locale) session.getAttribute(Attributes.PREFERRED_LOCALE);
 		if (locale == null) {
-			locale = new Locale(getProperties("defaultLang", "en"));
+			locale = new Locale(getProperties("defaultLang", "vi"));
 		}
 		return locale;
 	}
@@ -146,7 +146,7 @@ public class Util {
 			loginedUser = new User(UserType.GUEST.getId());
 			loginedUser.setRealName("Guest");
 			loginedUser.setUserName("Guest");
-			loginedUser.setLanguage(getProperties("defaultLang", "en"));
+			loginedUser.setLanguage(getProperties("defaultLang", "vi"));
 		}
 		session.setAttribute(Attributes.PREFERRED_LOCALE, new Locale(loginedUser.getLanguage()));
 		return loginedUser;
