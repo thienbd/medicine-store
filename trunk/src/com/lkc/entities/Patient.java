@@ -68,4 +68,13 @@ public class Patient implements Serializable {
 	public String toString() {
 		return fullName;
 	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj != null && obj instanceof Patient) {
+			Patient that = (Patient) obj;
+			return this.id == that.id;
+		}
+		return false;
+	}
 }

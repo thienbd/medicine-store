@@ -77,4 +77,12 @@ public class Examination implements Serializable {
 		this.examCost = examCost;
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		if (obj != null && obj instanceof Examination) {
+			Examination that = (Examination) obj;
+			return this.id == that.id;
+		}
+		return false;
+	}
 }

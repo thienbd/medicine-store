@@ -80,4 +80,12 @@ public class ExaminationDetail implements Serializable {
 		this.usingGuide = usingGuide;
 	}
 
+	@Override
+	public boolean equals(Object obj) {
+		if (obj != null && obj instanceof Examination) {
+			ExaminationDetail that = (ExaminationDetail) obj;
+			return this.examination.getId() == that.examination.getId() && this.medicine.getId() == that.medicine.getId();
+		}
+		return false;
+	}
 }
