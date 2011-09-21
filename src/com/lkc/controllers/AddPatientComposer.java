@@ -131,6 +131,7 @@ public class AddPatientComposer extends GenericAutowireComposer {
 							if (saved != null && saved == true) {
 								Examination examination = (Examination) window.getAttribute(AddExaminationComposer.EXAM_KEY);
 								if (examination != null) {
+									examination.setPatient(patient);
 									List<ExaminationDetail> examinationDetails = mapExamination.get(examination);
 									if (examinationDetails == null) {
 										examinationDetails = new ArrayList<ExaminationDetail>();
