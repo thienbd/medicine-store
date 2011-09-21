@@ -42,6 +42,7 @@ public class AddExaminationComposer extends GenericAutowireComposer {
 	private DelegatingVariableResolver resolver;
 	private Component component;
 	private ActionTrigger actionTrigger;
+	private Patient patient;
 
 	public AddExaminationComposer() {
 		resolver = Util.getSpringDelegatingVariableResolver();
@@ -53,7 +54,7 @@ public class AddExaminationComposer extends GenericAutowireComposer {
 		super.doAfterCompose(comp);
 		this.component = comp;
 		Map<String, Object> args = execution.getArg();
-		Patient patient = (Patient) args.get(ComposerUtil.PATIENT_KEY);
+		patient = (Patient) args.get(ComposerUtil.PATIENT_KEY);
 		actionTrigger = (ActionTrigger) args.get(ComposerUtil.ACTION_KEY);
 		if (patient == null || actionTrigger == null) {
 			messageUtil.showError(Labels.getLabel("error"),
@@ -98,7 +99,7 @@ public class AddExaminationComposer extends GenericAutowireComposer {
 					Calendar examDate = new GregorianCalendar();
 					examDate.setTime(examDateDatebox.getValue());
 					Examination examination = new Examination(System.currentTimeMillis(), dianogsisTextbox.getValue(), examDate,
-							currentUser, Double.parseDouble(examCostTextbox.getValue()), null);
+							currentUser, Double.parseDouble(examCostTextbox.getValue()), patient);
 					component.setAttribute(EXAM_KEY, examination);
 					component.setAttribute(SAVE_KEY, true);
 					component.detach();

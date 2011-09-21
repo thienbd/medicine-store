@@ -12,6 +12,7 @@ public class PatternConstraint implements Constraint {
 	public static final String emailPattern = "[a-zA-Z0-9_]+[\\.[a-zA-Z0-9]+]*@[a-zA-Z0-9_]+[.[a-zA-Z]+]+";
 	public static final String integerPattern = "[-]*[\\d]+";
 	public static final String integerLargerThanOrEqual0Pattern = "[\\d]+";
+	public static final String integerLargerThan0Pattern = "[1-9]+";
 	public static final String doublePattern = "[-]*[\\d]+[.]{0,1}[\\d]*";
 	public static final String doubleLargerThanOrEqual0Pattern = "[-]*[\\d]+[.]{0,1}[\\d]*";
 	public static final String doubleLargerThan0Pattern = "[\\d]+[.]{0,1}[\\d]*";

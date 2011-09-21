@@ -19,6 +19,11 @@ import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Label;
+import org.zkoss.zul.Listbox;
+import org.zkoss.zul.Listcell;
+import org.zkoss.zul.Listhead;
+import org.zkoss.zul.Listheader;
+import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Panel;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.Rows;
@@ -44,9 +49,10 @@ public class AddPatientComposer extends GenericAutowireComposer {
 	private Combobox fullNameCombobox;
 	private Datebox dateOfBirthDatebox;
 	private Textbox addressTextbox;
+	private Button saveButton;
+	private Button clearButton;
 
-	private Rows examRows;
-	private Button addExamination;
+	private Listbox examList;
 	private Label listMedicineLabel;
 	private Rows medicineListRows;
 	private Panel medicinesPanel;
@@ -76,6 +82,8 @@ public class AddPatientComposer extends GenericAutowireComposer {
 		this.component = comp;
 		// Listener
 		addListener();
+		//Refresh
+		refreshExam();
 	}
 
 	private void addListener() {
@@ -108,7 +116,55 @@ public class AddPatientComposer extends GenericAutowireComposer {
 		};
 		fullNameCombobox.addEventListener(Events.ON_CHANGE, fullnameListner);
 		medicinesPanel.setVisible(false);
-		addExamination.addEventListener(Events.ON_CLICK, new SerializableEventListener() {
+		clearButton.addEventListener(Events.ON_CLICK, new SerializableEventListener() {
+			private static final long serialVersionUID = 1015476361207982066L;
+
+			@Override
+			public void onEvent(Event arg0) throws Exception {
+				addressTextbox.setValue("");
+				fullNameCombobox.setValue("");
+				dateOfBirthDatebox.setValue(null);
+				mapExamination.clear();
+				refreshExam();
+			}
+		});
+		saveButton.addEventListener(Events.ON_CLICK, new SerializableEventListener() {
+			private static final long serialVersionUID = 6550487720302760839L;
+
+			@Override
+			public void onEvent(Event arg0) throws Exception {
+				patientDAO.saveOrUpdate(patient);
+				Set<Examination> examinations = mapExamination.keySet();
+				for (Examination examination : examinations) {
+					examinationDAO.saveOrUpdate(examination);
+					List<ExaminationDetail> examinationDetails = mapExamination.get(examination);
+					examinationDetailDAO.saveOrUpdateAll(examinationDetails);
+				}
+			}
+		});
+	}
+
+	private void refreshExam() {
+		composerUtil.removeAllChilds(examList);
+		// Header
+		Listhead listhead = new Listhead();
+		examList.appendChild(listhead);
+		Listheader nobListheader = new Listheader(Labels.getLabel("nob"));
+		nobListheader.setWidth("50px");
+		listhead.appendChild(nobListheader);
+		Listheader dianogsisListheader = new Listheader(Labels.getLabel("dianogsis"));
+		listhead.appendChild(dianogsisListheader);
+		Listheader examDateListheader = new Listheader(Labels.getLabel("exam-date"));
+		listhead.appendChild(examDateListheader);
+		Listheader doctorListheader = new Listheader(Labels.getLabel("doctor"));
+		listhead.appendChild(doctorListheader);
+		Listheader examCostListheader = new Listheader(Labels.getLabel("exam-cost"));
+		listhead.appendChild(examCostListheader);
+		Listheader actionListheader = new Listheader();
+		Button addExaminationButton = new Button(Labels.getLabel("add-examination"));
+		actionListheader.appendChild(addExaminationButton);
+		listhead.appendChild(actionListheader);
+		addExaminationButton.addEventListener(Events.ON_CLICK, new SerializableEventListener() {
 			private static final long serialVersionUID = 4401545987919876356L;
 
 			@Override
@@ -131,7 +187,6 @@ public class AddPatientComposer extends GenericAutowireComposer {
 							if (saved != null && saved == true) {
 								Examination examination = (Examination) window.getAttribute(AddExaminationComposer.EXAM_KEY);
 								if (examination != null) {
-									examination.setPatient(patient);
 									List<ExaminationDetail> examinationDetails = mapExamination.get(examination);
 									if (examinationDetails == null) {
 										examinationDetails = new ArrayList<ExaminationDetail>();
@@ -147,40 +202,37 @@ public class AddPatientComposer extends GenericAutowireComposer {
 					Window window = (Window) execution.createComponents("/addExamination.zul", component, params);
 					window.doModal();
 				} catch (UiException e) {
-					component.detach();
 					e.printStackTrace();
 				}
 			}
 		});
-	}
-
-	private void refreshExam() {
-		composerUtil.removeAllChilds(examRows);
+		examList.setEmptyMessage(Labels.getLabel("list-empty"));
+		// End header
 		selectedExamination = null;
 		Set<Examination> setExaminations = mapExamination.keySet();
 		int i = 0;
 		for (final Examination examination : setExaminations) {
-			Row row = new Row();
-			examRows.appendChild(row);
-			Label nobLabel = new Label("" + (i++));
-			row.appendChild(nobLabel);
-			Label dianogsisLabel = new Label(examination.getDianogsis());
-			row.appendChild(dianogsisLabel);
-			Label examDate = new Label(Util.toString(examination.getExamDate(), false));
-			row.appendChild(examDate);
-			Label doctorLabel = new Label(examination.getDoctor().getRealName());
-			row.appendChild(doctorLabel);
-			Label examCost = new Label(examination.getExamCost() + "");
-			row.appendChild(examCost);
-			Hbox hbox = new Hbox();
+			Listitem listitem = new Listitem();
+			examList.appendChild(listitem);
+			Listcell nobListcell = new Listcell("" + (++i));
+			listitem.appendChild(nobListcell);
+			Listcell dianogsisListcell = new Listcell(examination.getDianogsis());
+			listitem.appendChild(dianogsisListcell);
+			Listcell examDateListcell = new Listcell(Util.toString(examination.getExamDate(), false));
+			listitem.appendChild(examDateListcell);
+			Listcell doctorListcell = new Listcell(examination.getDoctor().getRealName());
+			listitem.appendChild(doctorListcell);
+			Listcell examCostListcell = new Listcell(examination.getExamCost() + "");
+			listitem.appendChild(examCostListcell);
+			Listcell actionCell = new Listcell();
 			Button editButton = new Button(Labels.getLabel("edit"));
 			Button deleteButton = new Button(Labels.getLabel("delete"));
 			deleteButton.setStyle("margin-left:10px");
-			hbox.appendChild(editButton);
-			hbox.appendChild(deleteButton);
-			row.appendChild(hbox);
-			row.setZclass("handCursor");
-			row.addEventListener(Events.ON_CLICK, new SerializableEventListener() {
+			actionCell.appendChild(editButton);
+			actionCell.appendChild(deleteButton);
+			listitem.appendChild(actionCell);
+			listitem.setZclass("handCursor");
+			listitem.addEventListener(Events.ON_CLICK, new SerializableEventListener() {
 				private static final long serialVersionUID = 1015476361207982066L;
 
 				@Override
@@ -227,6 +279,7 @@ public class AddPatientComposer extends GenericAutowireComposer {
 			}
 		}
 		composerUtil.removeAllEvent(addExaminationDetailButton, Events.ON_CLICK);
+		final Examination temp = selectedExamination;
 		addExaminationDetailButton.addEventListener(Events.ON_CLICK, new SerializableEventListener() {
 
 			private static final long serialVersionUID = 1015476361207982066L;
@@ -234,7 +287,7 @@ public class AddPatientComposer extends GenericAutowireComposer {
 			@Override
 			public void onEvent(Event arg0) throws Exception {
 				Map<String, Object> params = new HashMap<String, Object>();
-				params.put(ComposerUtil.EXAMINATION_KEY, selectedExamination);
+				params.put(ComposerUtil.EXAMINATION_KEY, temp);
 				params.put(ComposerUtil.ACTION_KEY, new ActionTrigger() {
 					private static final long serialVersionUID = -2132971754026415251L;
 
@@ -246,7 +299,7 @@ public class AddPatientComposer extends GenericAutowireComposer {
 							ExaminationDetail examinationDetail = (ExaminationDetail) window
 									.getAttribute(AddExaminationDetailComposer.DETAIL_KEY);
 							if (examinationDetail != null) {
-								List<ExaminationDetail> examinationDetails = mapExamination.get(selectedExamination);
+								List<ExaminationDetail> examinationDetails = mapExamination.get(temp);
 								examinationDetails.add(examinationDetail);
 								refreshListMedicine();
 							}
