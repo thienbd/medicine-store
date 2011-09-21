@@ -27,6 +27,7 @@ import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
 
 import com.lkc.dao.ExaminationDAO;
+import com.lkc.dao.ExaminationDetailDAO;
 import com.lkc.dao.PatientDAO;
 import com.lkc.entities.Examination;
 import com.lkc.entities.ExaminationDetail;
@@ -58,6 +59,7 @@ public class AddPatientComposer extends GenericAutowireComposer {
 	private Map<Examination, List<ExaminationDetail>> mapExamination = new HashMap<Examination, List<ExaminationDetail>>();
 	private ComposerUtil composerUtil;
 	private Examination selectedExamination;
+	private ExaminationDetailDAO examinationDetailDAO;
 
 	public AddPatientComposer() {
 		resolver = Util.getSpringDelegatingVariableResolver();
@@ -65,6 +67,7 @@ public class AddPatientComposer extends GenericAutowireComposer {
 		patientDAO = (PatientDAO) resolver.resolveVariable("patientDAO");
 		patient = new Patient(System.currentTimeMillis());
 		composerUtil = (ComposerUtil) resolver.resolveVariable("composerUtil");
+		examinationDetailDAO = (ExaminationDetailDAO) resolver.resolveVariable("examinationDetailDAO");
 	}
 
 	@Override
@@ -91,6 +94,12 @@ public class AddPatientComposer extends GenericAutowireComposer {
 					patient = patients.get(0);
 					addressTextbox.setValue(patient.getAddress());
 					dateOfBirthDatebox.setValue(patient.getDateOfBirth().getTime());
+					mapExamination.clear();
+					List<Examination> listExaminations = examinationDAO.loadByPatient(patient);
+					for (Examination examination : listExaminations) {
+						List<ExaminationDetail> examinationDetails = examinationDetailDAO.loadByExamination(examination);
+						mapExamination.put(examination, examinationDetails);
+					}
 					refreshExam();
 				} else {
 					patient = new Patient(System.currentTimeMillis());
@@ -146,6 +155,7 @@ public class AddPatientComposer extends GenericAutowireComposer {
 
 	private void refreshExam() {
 		composerUtil.removeAllChilds(examRows);
+		selectedExamination = null;
 		Set<Examination> setExaminations = mapExamination.keySet();
 		int i = 0;
 		for (final Examination examination : setExaminations) {
@@ -168,6 +178,7 @@ public class AddPatientComposer extends GenericAutowireComposer {
 			hbox.appendChild(editButton);
 			hbox.appendChild(deleteButton);
 			row.appendChild(hbox);
+			row.setZclass("handCursor");
 			row.addEventListener(Events.ON_CLICK, new SerializableEventListener() {
 				private static final long serialVersionUID = 1015476361207982066L;
 
@@ -180,6 +191,7 @@ public class AddPatientComposer extends GenericAutowireComposer {
 				}
 			});
 		}
+		refreshListMedicine();
 	}
 
 	private void refreshListMedicine() {
@@ -213,5 +225,41 @@ public class AddPatientComposer extends GenericAutowireComposer {
 				}
 			}
 		}
+		composerUtil.removeAllEvent(addExaminationDetailButton, Events.ON_CLICK);
+		addExaminationDetailButton.addEventListener(Events.ON_CLICK, new SerializableEventListener() {
+
+			private static final long serialVersionUID = 1015476361207982066L;
+
+			@Override
+			public void onEvent(Event arg0) throws Exception {
+				Map<String, Object> params = new HashMap<String, Object>();
+				params.put(ComposerUtil.EXAMINATION_KEY, selectedExamination);
+				params.put(ComposerUtil.ACTION_KEY, new ActionTrigger() {
+					private static final long serialVersionUID = -2132971754026415251L;
+
+					@Override
+					public void doAction(Object data) throws Throwable {
+						Window window = (Window) data;
+						Boolean saved = (Boolean) window.getAttribute(AddExaminationComposer.SAVE_KEY);
+						if (saved != null && saved == true) {
+							ExaminationDetail examinationDetail = (ExaminationDetail) window
+									.getAttribute(AddExaminationDetailComposer.DETAIL_KEY);
+							if (examinationDetail != null) {
+								List<ExaminationDetail> examinationDetails = mapExamination.get(selectedExamination);
+								examinationDetails.add(examinationDetail);
+								refreshListMedicine();
+							}
+						}
+					}
+
+					@Override
+					public void doAction() throws Throwable {
+						throw new UnsupportedOperationException();
+					}
+				});
+				Window window = (Window) execution.createComponents("/addExaminationDetail.zul", component, params);
+				window.doModal();
+			}
+		});
 	}
 }

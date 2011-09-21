@@ -2,8 +2,9 @@
 <?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
 
 <zk xmlns:h="xhtml">
+	<style src="/css/main.css" />
+	
 	<window title="${c:l('app.title')}" border="normal" apply="com.lkc.controllers.AddPatientComposer" position="center" width="840px">
-		<style src="/css/main.css" />
 		<vbox>
 			<hbox width="800px">
 				<grid width="400px">
@@ -41,7 +42,7 @@
 						<button label="${c:l('add-examination')}" id="addExamination" />
 					</column>
 				</columns>
-				<rows id="examRows" zclass="hand-cursor">
+				<rows id="examRows">
 
 				</rows>
 			</grid>
@@ -55,7 +56,7 @@
 							<column label="${c:l('quantity')}" />
 							<column label="${c:l('using-guide')}" />
 							<column>
-								<button label="${c:l('add-medicine')}" id="addExaminationDetailButton"/>
+								<button label="${c:l('add-medicine')}" id="addExaminationDetailButton" />
 							</column>
 						</columns>
 						<rows id="medicineListRows">
