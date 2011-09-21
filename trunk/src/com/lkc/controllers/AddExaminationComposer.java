@@ -98,7 +98,7 @@ public class AddExaminationComposer extends GenericAutowireComposer {
 					Calendar examDate = new GregorianCalendar();
 					examDate.setTime(examDateDatebox.getValue());
 					Examination examination = new Examination(System.currentTimeMillis(), dianogsisTextbox.getValue(), examDate,
-							currentUser, Double.parseDouble(examCostTextbox.getValue()));
+							currentUser, Double.parseDouble(examCostTextbox.getValue()), null);
 					component.setAttribute(EXAM_KEY, examination);
 					component.setAttribute(SAVE_KEY, true);
 					component.detach();
