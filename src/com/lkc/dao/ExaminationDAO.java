@@ -20,10 +20,6 @@ public class ExaminationDAO extends GenericDAO<Examination> {
 
 	public List<Examination> loadByPatient(final Patient patient) {
 		HibernateTemplate hibernateTemplate = getHibernateTemplate();
-		// List<Examination> result = hibernateTemplate.findByNamedQuery("from "
-		// + entityBeanType.getSimpleName()
-		// + " ex where ex.patient_id=:patient order by ex.examDate asc",
-		// "patient", patient);
 		List<Examination> result = hibernateTemplate.execute(new HibernateCallback<List<Examination>>() {
 			@Override
 			public List<Examination> doInHibernate(Session session) throws HibernateException, SQLException {

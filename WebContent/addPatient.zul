@@ -31,21 +31,7 @@
 			<hlayout>
 				<label value="${c:l('examination-detail')}: " style="margin-top:40px;" />
 			</hlayout>
-			<grid emptyMessage="${c:l('list-empty')}">
-				<columns>
-					<column label="${c:l('nob')}" width="50px" />
-					<column label="${c:l('dianogsis')}" />
-					<column label="${c:l('exam-date')}" />
-					<column label="${c:l('doctor')}" />
-					<column label="${c:l('exam-cost')}" />
-					<column>
-						<button label="${c:l('add-examination')}" id="addExamination" />
-					</column>
-				</columns>
-				<rows id="examRows">
-
-				</rows>
-			</grid>
+			<listbox id="examList" emptyMessage="${c:l('list-empty')}" />
 			<panel id="medicinesPanel">
 				<panelchildren>
 					<label id="listMedicineLabel" style="margin-top:10px;" />
@@ -68,7 +54,7 @@
 			<h:div style="margin-top:5px;text-align:center;">
 				<hlayout>
 					<button label="${c:l('save')}" id="saveButton" />
-					<button label="${c:l('close')}" id="closeButton" />
+					<button label="${c:l('clear')}" id="clearButton" />
 				</hlayout>
 			</h:div>
 		</vbox>

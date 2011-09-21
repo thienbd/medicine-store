@@ -3,7 +3,7 @@
 
 <zk xmlns:h="xhtml">
 	<window title="${c:l('add-examination-detail')}" border="normal" width="400px"
-		apply="com.lkc.controllers.AddExaminationDetailComposer">
+		apply="com.lkc.controllers.AddExaminationDetailComposer" closable="true">
 		<grid>
 			<columns>
 				<column />
@@ -12,14 +12,16 @@
 			<rows>
 				<row>
 					<label value="${c:l('medicine-uper')}:" />
-					<combobox id="medicineCombobox" width="98%" />
+					<combobox id="medicineCombobox" width="98%" autocomplete="true" />
 				</row>
 				<row>
 					<label value="${c:l('quantity')}:" />
 					<textbox id="quantityTextbox" width="98%" />
 				</row>
-				<row>
-					<label value="${C:l('using-guide')}:" />
+				<row spans="2">
+					<label value="${c:l('using-guide')}:" />
+				</row>
+				<row spans="2">
 					<textbox multiline="true" id="usingTextbox" width="98%" height="120px" />
 				</row>
 			</rows>
