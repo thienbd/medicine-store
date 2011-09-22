@@ -3,7 +3,7 @@
 
 <zk xmlns:h="xhtml">
 
-	<window title="${c:l('input-patient')}" border="normal" apply="com.lkc.controllers.AddPatientComposer" position="center" width="840px">
+	<window title="${c:l('input-patient')}" border="normal" apply="com.lkc.controllers.AddPatientComposer" position="center">
 		<style src="/css/main.css" />
 		<vbox>
 			<hbox width="800px">
