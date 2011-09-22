@@ -20,37 +20,37 @@ import org.zkoss.zul.Rows;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
 
-import com.lkc.dao.PatientDAO;
-import com.lkc.entities.Patient;
+import com.lkc.dao.MedicineDAO;
+import com.lkc.entities.Medicine;
 import com.lkc.utils.ComposerUtil;
 import com.lkc.utils.MessageUtil;
 import com.lkc.utils.Util;
 
-public class PatientManagementComposer extends GenericAutowireComposer {
+public class MedicineManagementComposer extends GenericAutowireComposer {
 
-	private static final long serialVersionUID = -6676245595960171112L;
+	private static final long serialVersionUID = -7763636671952856478L;
 	private Component component;
 
-	private Textbox searchPatientTextbox;
-	private Button searchPatientButton;
+	private Textbox searchMedicineTextbox;
+	private Button searchMedicineButton;
 	private boolean searched = false;
 	private String searchData = "";
 
-	private Button addPatientButton;
-	private Rows patientRows;
-	private Paging patientPaging;
+	private Button addMedicineButton;
+	private Rows medicineRows;
+	private Paging medicinePaging;
 	private int currentPage = 1;
 	private int numOfPage = 1;
-	private int patientPerPage = 10;
+	private int medicinePerPage = 10;
 
 	private DelegatingVariableResolver resolver;
-	private PatientDAO patientDAO;
+	private MedicineDAO medicineDAO;
 	private ComposerUtil composerUtil;
 	private MessageUtil messageUtil;
 
-	public PatientManagementComposer() {
+	public MedicineManagementComposer() {
 		resolver = Util.getSpringDelegatingVariableResolver();
-		patientDAO = (PatientDAO) resolver.resolveVariable("patientDAO");
+		medicineDAO = (MedicineDAO) resolver.resolveVariable("medicineDAO");
 		composerUtil = (ComposerUtil) resolver.resolveVariable("composerUtil");
 		messageUtil = (MessageUtil) resolver.resolveVariable("messageUtil");
 	}
@@ -62,18 +62,19 @@ public class PatientManagementComposer extends GenericAutowireComposer {
 		// Listener
 		addListener();
 		// Refresh
-		refreshPatients();
+		refreshMedicines();
 	}
 
 	private void addListener() {
-		addPatientButton.addEventListener(Events.ON_CLICK, new SerializableEventListener() {
-			private static final long serialVersionUID = -1969797128034183689L;
+		addMedicineButton.addEventListener(Events.ON_CLICK, new SerializableEventListener() {
+
+			private static final long serialVersionUID = 1416055834052387634L;
 
 			@Override
 			public void onEvent(Event arg0) throws Exception {
 				Map<String, Object> params = new HashMap<String, Object>();
 				params.put(ComposerUtil.ACTION_KEY, refreshActionTrigger);
-				Window window = (Window) execution.createComponents("/addPatient.zul", component, params);
+				Window window = (Window) execution.createComponents("/addMedicine.zul", component, params);
 				try {
 					window.setClosable(true);
 					window.doModal();
@@ -87,59 +88,55 @@ public class PatientManagementComposer extends GenericAutowireComposer {
 			}
 		});
 		SerializableEventListener searchEvent = new SerializableEventListener() {
-			private static final long serialVersionUID = -4585648910962389805L;
+			private static final long serialVersionUID = 3212992361144848710L;
 
 			@Override
 			public void onEvent(Event arg0) throws Exception {
-				searchData = searchPatientTextbox.getValue().trim();
+				searchData = searchMedicineTextbox.getValue().trim();
 				searched = (!searchData.isEmpty());
-				refreshPatients();
+				refreshMedicines();
 			}
 
 		};
-		searchPatientTextbox.addEventListener(Events.ON_OK, searchEvent);
-		searchPatientButton.addEventListener(Events.ON_CLICK, searchEvent);
+		searchMedicineTextbox.addEventListener(Events.ON_OK, searchEvent);
+		searchMedicineButton.addEventListener(Events.ON_CLICK, searchEvent);
 	}
 
-	private void refreshPatients() {
-		composerUtil.removeAllChilds(patientRows);
-		List<Patient> listPatients = null;
+	private void refreshMedicines() {
+		composerUtil.removeAllChilds(medicineRows);
+		List<Medicine> listMedicines = null;
 		if (searched) {
 			Map<String, String> searchMapData = new HashMap<String, String>();
-			searchMapData.put("fullName", searchData);
-			loadPatientPage(searchMapData);
-			listPatients = patientDAO.loadSearch((currentPage - 1) * patientPerPage, patientPerPage, searchMapData);
+			searchMapData.put("name", searchData);
+			loadMedicinePage(searchMapData);
+			listMedicines = medicineDAO.loadSearch((currentPage - 1) * medicinePerPage, medicinePerPage, searchMapData);
 		} else {
-			loadPatientPage(null);
-			listPatients = patientDAO.load((currentPage - 1) * patientPerPage, patientPerPage);
+			loadMedicinePage(null);
+			listMedicines = medicineDAO.load((currentPage - 1) * medicinePerPage, medicinePerPage);
 		}
 		int i = 0;
-		for (final Patient patient : listPatients) {
+		for (final Medicine medicine : listMedicines) {
 			Row row = new Row();
-			patientRows.appendChild(row);
+			medicineRows.appendChild(row);
 			Label nobLabel = new Label(String.valueOf(++i));
 			row.appendChild(nobLabel);
-			Label fullnameLabel = new Label(patient.getFullName());
-			row.appendChild(fullnameLabel);
-			Label dateOfBirthLabel = new Label(Util.toString(patient.getDateOfBirth(), false));
-			row.appendChild(dateOfBirthLabel);
-			Label phoneLabel = new Label(patient.getPhone());
-			row.appendChild(phoneLabel);
-			Label addressLabel = new Label(patient.getAddress());
-			row.appendChild(addressLabel);
+			Label nameLabel = new Label(medicine.getName());
+			row.appendChild(nameLabel);
+			Label priceLabel = new Label(String.valueOf(medicine.getPrice()));
+			row.appendChild(priceLabel);
 			Hbox actionHbox = new Hbox();
 			row.appendChild(actionHbox);
 			Button editButton = new Button(Labels.getLabel("edit"));
 			actionHbox.appendChild(editButton);
 			editButton.addEventListener(Events.ON_CLICK, new SerializableEventListener() {
-				private static final long serialVersionUID = 3795760906191189265L;
+				private static final long serialVersionUID = -6933017148519067335L;
 
 				@Override
 				public void onEvent(Event arg0) throws Exception {
 					Map<String, Object> params = new HashMap<String, Object>();
-					params.put(ComposerUtil.PATIENT_KEY, patient);
 					params.put(ComposerUtil.ACTION_KEY, refreshActionTrigger);
-					Window window = (Window) execution.createComponents("/addPatient.zul", component, params);
+					params.put(ComposerUtil.MEDICINE_KEY, medicine);
+					Window window = (Window) execution.createComponents("/addMedicine.zul", component, params);
 					try {
 						window.setClosable(true);
 						window.doModal();
@@ -155,12 +152,12 @@ public class PatientManagementComposer extends GenericAutowireComposer {
 			Button deleteButton = new Button(Labels.getLabel("delete"));
 			actionHbox.appendChild(deleteButton);
 			deleteButton.addEventListener(Events.ON_CLICK, new SerializableEventListener() {
-				private static final long serialVersionUID = -3908666559530360443L;
+				private static final long serialVersionUID = -2172969624015500817L;
 
 				@Override
 				public void onEvent(Event arg0) throws Exception {
 					messageUtil.showConfirm(Labels.getLabel("confirm"),
-							Labels.getLabel("confirm-delete-patient", new Object[] { patient.getFullName() }), new ActionTrigger() {
+							Labels.getLabel("confirm-delete-medicine", new Object[] { medicine.getName() }), new ActionTrigger() {
 								private static final long serialVersionUID = 3481165408946064159L;
 
 								@Override
@@ -170,8 +167,8 @@ public class PatientManagementComposer extends GenericAutowireComposer {
 
 								@Override
 								public void doAction() throws Throwable {
-									patientDAO.delete(patient);
-									refreshPatients();
+									medicineDAO.delete(medicine);
+									refreshMedicines();
 								}
 							});
 				}
@@ -179,14 +176,14 @@ public class PatientManagementComposer extends GenericAutowireComposer {
 		}
 	}
 
-	private void loadPatientPage(Map<String, String> searchMapData) {
+	private void loadMedicinePage(Map<String, String> searchMapData) {
 		long count = 0;
 		if (searchMapData != null) {
-			count = patientDAO.countSearch(searchMapData);
+			count = medicineDAO.countSearch(searchMapData);
 		} else {
-			count = patientDAO.count();
+			count = medicineDAO.count();
 		}
-		numOfPage = (int) (count / patientPerPage + (count % patientPerPage > 0 ? 1 : 0));
+		numOfPage = (int) (count / medicinePerPage + (count % medicinePerPage > 0 ? 1 : 0));
 		if (currentPage > numOfPage) {
 			currentPage = numOfPage;
 		} else {
@@ -194,14 +191,14 @@ public class PatientManagementComposer extends GenericAutowireComposer {
 				currentPage = 1;
 			}
 		}
-		patientPaging.setTotalSize(numOfPage);
-		patientPaging.setPageSize(1);
-		patientPaging.setActivePage(currentPage - 1);
-		patientPaging.setVisible(numOfPage > 1);
+		medicinePaging.setTotalSize(numOfPage);
+		medicinePaging.setPageSize(1);
+		medicinePaging.setActivePage(currentPage - 1);
+		medicinePaging.setVisible(numOfPage > 1);
 	}
 
 	private ActionTrigger refreshActionTrigger = new ActionTrigger() {
-		private static final long serialVersionUID = 3361695060556685050L;
+		private static final long serialVersionUID = 421837411356308912L;
 
 		@Override
 		public void doAction(Object data) throws Throwable {
@@ -210,7 +207,7 @@ public class PatientManagementComposer extends GenericAutowireComposer {
 
 		@Override
 		public void doAction() throws Throwable {
-			refreshPatients();
+			refreshMedicines();
 		}
 	};
 }
