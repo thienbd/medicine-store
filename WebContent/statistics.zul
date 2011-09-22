@@ -7,17 +7,17 @@
 			<panelchildren>
 				<grid>
 					<columns>
-						<column />
+						<column width="100px"/>
 						<column />
 					</columns>
 					<rows>
 						<row>
 							<label value="${c:l('from-date')}: " />
-							<datebox format="medium" locale="vi" id="fromDatebox" />
+							<datebox format="medium" locale="vi" id="fromDatebox" width="90%"/>
 						</row>
 						<row>
 							<label value="${c:l('to-date')}: " />
-							<datebox format="medium" locale="vi" id="toDatebox" />
+							<datebox format="medium" locale="vi" id="toDatebox" width="90%"/>
 						</row>
 						<row spans="2">
 							<button label="${c:l('process')}"/>
