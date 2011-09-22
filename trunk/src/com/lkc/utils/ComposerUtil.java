@@ -16,6 +16,7 @@ public class ComposerUtil implements Serializable {
 	public static String PATIENT_KEY = "patient";
 	public static String ACTION_KEY = "action";
 	public static String EXAMINATION_KEY = "examination";
+	public static String MEDICINE_KEY = "medicine";
 
 	public ComposerUtil() {
 
