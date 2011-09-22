@@ -82,6 +82,8 @@ public class AddMedicineComposer extends GenericAutowireComposer {
 							try {
 								medicine.setPrice(Double.valueOf(priceTextbox.getValue()));
 								medicineDAO.update(medicine);
+								nameTextbox.setValue("");
+								priceTextbox.setValue("");
 								messageUtil.showMessage(Labels.getLabel("message"),
 										Labels.getLabel("save") + " " + Labels.getLabel("medicine-lower") + " \"" + medicine.getName()
 												+ "\" " + Labels.getLabel("success-lower"));

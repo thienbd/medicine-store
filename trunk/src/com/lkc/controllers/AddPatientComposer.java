@@ -39,6 +39,7 @@ import com.lkc.entities.ExaminationDetail;
 import com.lkc.entities.Medicine;
 import com.lkc.entities.Patient;
 import com.lkc.utils.ComposerUtil;
+import com.lkc.utils.MessageUtil;
 import com.lkc.utils.Util;
 
 public class AddPatientComposer extends GenericAutowireComposer {
@@ -63,6 +64,7 @@ public class AddPatientComposer extends GenericAutowireComposer {
 	private PatientDAO patientDAO;
 	private Patient patient;
 	private Map<Examination, List<ExaminationDetail>> mapExamination = new HashMap<Examination, List<ExaminationDetail>>();
+	private Map<Examination, List<ExaminationDetail>> mapRemoveWhenSave = new HashMap<Examination, List<ExaminationDetail>>();
 	private ComposerUtil composerUtil;
 	private Examination selectedExamination;
 	private ExaminationDetailDAO examinationDetailDAO;
@@ -82,7 +84,7 @@ public class AddPatientComposer extends GenericAutowireComposer {
 		this.component = comp;
 		// Listener
 		addListener();
-		//Refresh
+		// Refresh
 		refreshExam();
 	}
 
@@ -121,11 +123,7 @@ public class AddPatientComposer extends GenericAutowireComposer {
 
 			@Override
 			public void onEvent(Event arg0) throws Exception {
-				addressTextbox.setValue("");
-				fullNameCombobox.setValue("");
-				dateOfBirthDatebox.setValue(null);
-				mapExamination.clear();
-				refreshExam();
+				clear();
 			}
 		});
 		saveButton.addEventListener(Events.ON_CLICK, new SerializableEventListener() {
@@ -133,16 +131,68 @@ public class AddPatientComposer extends GenericAutowireComposer {
 
 			@Override
 			public void onEvent(Event arg0) throws Exception {
-				patientDAO.saveOrUpdate(patient);
-				Set<Examination> examinations = mapExamination.keySet();
-				for (Examination examination : examinations) {
-					examinationDAO.saveOrUpdate(examination);
-					List<ExaminationDetail> examinationDetails = mapExamination.get(examination);
-					examinationDetailDAO.saveOrUpdateAll(examinationDetails);
+				MessageUtil messageUtil = (MessageUtil) resolver.resolveVariable("messageUtil");
+				try {
+					patientDAO.saveOrUpdate(patient);
+					Set<Examination> examinations = mapExamination.keySet();
+					for (Examination examination : examinations) {
+						examinationDAO.saveOrUpdate(examination);
+						List<ExaminationDetail> examinationDetails = mapExamination.get(examination);
+						examinationDetailDAO.saveOrUpdateAll(examinationDetails);
+					}
+					Set<Examination> setExaminations = mapRemoveWhenSave.keySet();
+					for (Examination examination : setExaminations) {
+						List<ExaminationDetail> examinationDetails = mapRemoveWhenSave.get(examination);
+						for (ExaminationDetail examinationDetail : examinationDetails) {
+							examinationDetailDAO.delete(examinationDetail);
+						}
+						if (!examinations.contains(examination)) {
+							examinationDAO.delete(examination);
+						}
+					}
+					clear();
+					messageUtil.showMessage(Labels.getLabel("message"), Labels.getLabel("save") + " " + Labels.getLabel("success-lower"));
+				} catch (Exception e) {
+					e.printStackTrace();
+					messageUtil.showError(Labels.getLabel("error"), Labels.getLabel("save") + " " + Labels.getLabel("fail-lower"));
 				}
 			}
 		});
 	}
+
+	public void clear() {
+		addressTextbox.setValue("");
+		fullNameCombobox.setValue("");
+		dateOfBirthDatebox.setValue(null);
+		mapExamination.clear();
+		mapRemoveWhenSave.clear();
+		refreshExam();
+	}
+
+	private ActionTrigger putnewExaminationAction = new ActionTrigger() {
+		private static final long serialVersionUID = 7734638389931349151L;
+
+		@Override
+		public void doAction() throws Throwable {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
+		public void doAction(Object data) throws Throwable {
+			Window window = (Window) data;
+			Examination examination = (Examination) window.getAttribute(AddExaminationComposer.EXAM_KEY);
+			if (examination != null) {
+				List<ExaminationDetail> examinationDetails = mapExamination.get(examination);
+				if (examinationDetails == null) {
+					examinationDetails = new ArrayList<ExaminationDetail>();
+				}
+				mapExamination.remove(examination);
+				mapExamination.put(examination, examinationDetails);
+				refreshExam();
+			}
+		}
+
+	};
 
 	private void refreshExam() {
 		composerUtil.removeAllChilds(examList);
@@ -169,40 +219,18 @@ public class AddPatientComposer extends GenericAutowireComposer {
 
 			@Override
 			public void onEvent(Event arg0) throws Exception {
+				Map<String, Object> params = new HashMap<String, Object>();
+				params.put(ComposerUtil.PATIENT_KEY, patient);
+				params.put(ComposerUtil.ACTION_KEY, putnewExaminationAction);
+				Window window = (Window) execution.createComponents("/addExamination.zul", component, params);
 				try {
-					Map<String, Object> params = new HashMap<String, Object>();
-					params.put(ComposerUtil.PATIENT_KEY, patient);
-					params.put(ComposerUtil.ACTION_KEY, new ActionTrigger() {
-						private static final long serialVersionUID = 7734638389931349151L;
-
-						@Override
-						public void doAction() throws Throwable {
-							throw new UnsupportedOperationException();
-						}
-
-						@Override
-						public void doAction(Object data) throws Throwable {
-							Window window = (Window) data;
-							Boolean saved = (Boolean) window.getAttribute(AddExaminationComposer.SAVE_KEY);
-							if (saved != null && saved == true) {
-								Examination examination = (Examination) window.getAttribute(AddExaminationComposer.EXAM_KEY);
-								if (examination != null) {
-									List<ExaminationDetail> examinationDetails = mapExamination.get(examination);
-									if (examinationDetails == null) {
-										examinationDetails = new ArrayList<ExaminationDetail>();
-									}
-									mapExamination.remove(examination);
-									mapExamination.put(examination, examinationDetails);
-									refreshExam();
-								}
-							}
-						}
-
-					});
-					Window window = (Window) execution.createComponents("/addExamination.zul", component, params);
 					window.doModal();
 				} catch (UiException e) {
 					e.printStackTrace();
+					try {
+						window.detach();
+					} catch (Exception ex) {
+					}
 				}
 			}
 		});
@@ -243,6 +271,47 @@ public class AddPatientComposer extends GenericAutowireComposer {
 					refreshListMedicine();
 				}
 			});
+			editButton.addEventListener(Events.ON_CLICK, new SerializableEventListener() {
+				private static final long serialVersionUID = 4401545987919876356L;
+
+				@Override
+				public void onEvent(Event arg0) throws Exception {
+					Map<String, Object> params = new HashMap<String, Object>();
+					params.put(ComposerUtil.PATIENT_KEY, patient);
+					params.put(ComposerUtil.ACTION_KEY, putnewExaminationAction);
+					params.put(AddExaminationComposer.EXAM_KEY, examination);
+					Window window = (Window) execution.createComponents("/addExamination.zul", component, params);
+					try {
+						window.doModal();
+					} catch (UiException e) {
+						e.printStackTrace();
+						try {
+							window.detach();
+						} catch (Exception ex) {
+						}
+					}
+				}
+			});
+			deleteButton.addEventListener(Events.ON_CLICK, new SerializableEventListener() {
+				private static final long serialVersionUID = 1462016137628719546L;
+
+				@Override
+				public void onEvent(Event arg0) throws Exception {
+					List<ExaminationDetail> examinationDetails = mapExamination.get(examination);
+					mapExamination.remove(examination);
+					List<ExaminationDetail> examinationDetails2 = mapRemoveWhenSave.get(examination);
+					if (examinationDetails2 == null) {
+						examinationDetails2 = new ArrayList<ExaminationDetail>();
+					}
+					for (ExaminationDetail examinationDetail : examinationDetails) {
+						if (examinationDetailDAO.checkExistByField("id", examinationDetail.getId())
+								&& (!examinationDetails2.contains(examinationDetail))) {
+							examinationDetails2.add(examinationDetail);
+						}
+					}
+					mapRemoveWhenSave.put(examination, examinationDetails2);
+				}
+			});
 		}
 		refreshListMedicine();
 	}
@@ -253,10 +322,11 @@ public class AddPatientComposer extends GenericAutowireComposer {
 			medicinesPanel.setVisible(false);
 		} else {
 			medicinesPanel.setVisible(true);
+			final Examination temp = selectedExamination;
 			List<ExaminationDetail> details = mapExamination.get(selectedExamination);
 			if (details != null) {
 				int i = 0;
-				for (ExaminationDetail examinationDetail : details) {
+				for (final ExaminationDetail examinationDetail : details) {
 					Medicine medicine = examinationDetail.getMedicine();
 					Row row = new Row();
 					medicineListRows.appendChild(row);
@@ -275,11 +345,55 @@ public class AddPatientComposer extends GenericAutowireComposer {
 					hbox.appendChild(editButton);
 					hbox.appendChild(deleteButton);
 					row.appendChild(hbox);
+					editButton.addEventListener(Events.ON_CLICK, new SerializableEventListener() {
+
+						private static final long serialVersionUID = 1015476361207982066L;
+
+						@Override
+						public void onEvent(Event arg0) throws Exception {
+							Map<String, Object> params = new HashMap<String, Object>();
+							params.put(ComposerUtil.EXAMINATION_KEY, temp);
+							params.put(AddExaminationDetailComposer.DETAIL_KEY, examinationDetail);
+							params.put(ComposerUtil.ACTION_KEY, new ActionTrigger() {
+								private static final long serialVersionUID = -2132971754026415251L;
+
+								@Override
+								public void doAction(Object data) throws Throwable {
+									Window window = (Window) data;
+									saveExaminationDetail(temp, window);
+								}
+
+								@Override
+								public void doAction() throws Throwable {
+									throw new UnsupportedOperationException();
+								}
+							});
+							Window window = (Window) execution.createComponents("/addExaminationDetail.zul", component, params);
+							window.doModal();
+						}
+					});
+					deleteButton.addEventListener(Events.ON_CLICK, new SerializableEventListener() {
+						private static final long serialVersionUID = 8742730365136032211L;
+
+						@Override
+						public void onEvent(Event arg0) throws Exception {
+							List<ExaminationDetail> examinationDetails = mapExamination.get(temp);
+							examinationDetails.remove(examinationDetail);
+							List<ExaminationDetail> examinationDetails2 = mapRemoveWhenSave.get(temp);
+							if (examinationDetails2 == null) {
+								examinationDetails2 = new ArrayList<ExaminationDetail>();
+							}
+							if (examinationDetailDAO.checkExistByField("id", examinationDetail.getId())) {
+								examinationDetails2.add(examinationDetail);
+							}
+							mapRemoveWhenSave.put(temp, examinationDetails2);
+						}
+					});
 				}
 			}
 		}
-		composerUtil.removeAllEvent(addExaminationDetailButton, Events.ON_CLICK);
 		final Examination temp = selectedExamination;
+		composerUtil.removeAllEvent(addExaminationDetailButton, Events.ON_CLICK);
 		addExaminationDetailButton.addEventListener(Events.ON_CLICK, new SerializableEventListener() {
 
 			private static final long serialVersionUID = 1015476361207982066L;
@@ -294,16 +408,7 @@ public class AddPatientComposer extends GenericAutowireComposer {
 					@Override
 					public void doAction(Object data) throws Throwable {
 						Window window = (Window) data;
-						Boolean saved = (Boolean) window.getAttribute(AddExaminationComposer.SAVE_KEY);
-						if (saved != null && saved == true) {
-							ExaminationDetail examinationDetail = (ExaminationDetail) window
-									.getAttribute(AddExaminationDetailComposer.DETAIL_KEY);
-							if (examinationDetail != null) {
-								List<ExaminationDetail> examinationDetails = mapExamination.get(temp);
-								examinationDetails.add(examinationDetail);
-								refreshListMedicine();
-							}
-						}
+						saveExaminationDetail(temp, window);
 					}
 
 					@Override
@@ -315,5 +420,26 @@ public class AddPatientComposer extends GenericAutowireComposer {
 				window.doModal();
 			}
 		});
+	}
+
+	private void saveExaminationDetail(Examination examination, Window window) {
+		ExaminationDetail examinationDetail = (ExaminationDetail) window.getAttribute(AddExaminationDetailComposer.DETAIL_KEY);
+		if (examinationDetail != null) {
+			List<ExaminationDetail> examinationDetails = mapExamination.get(examination);
+			boolean contain = false;
+			for (ExaminationDetail examinationDetail2 : examinationDetails) {
+				if (examinationDetail.getId() == examinationDetail2.getId()) {
+					contain = true;
+					examinationDetail2.setMedicine(examinationDetail.getMedicine());
+					examinationDetail2.setQuantity(examinationDetail.getQuantity());
+					examinationDetail2.setUsingGuide(examinationDetail.getUsingGuide());
+					break;
+				}
+			}
+			if (!contain) {
+				examinationDetails.add(examinationDetail);
+			}
+			refreshListMedicine();
+		}
 	}
 }
