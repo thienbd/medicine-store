@@ -1,0 +1,30 @@
+<?page title="${c:l('app.title')}" contentType="text/html;charset=UTF-8"?>
+<?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
+
+<zk>
+	<window title="${c:l('patient-management')}" border="normal" apply="com.lkc.controllers.PatientManagementComposer">
+		<vlayout>
+			<hlayout>
+				<label value="${c:l('search-patient')}:" />
+				<textbox id="searchPatientTextbox" />
+				<button label="${c:l('search')}" id="searchPatientButton" />
+			</hlayout>
+			<grid emptyMessage="${c:l('list-empty')}">
+				<columns>
+					<column label="${c:l('nob')}" width="50px" />
+					<column label="${c:l('fullname')}" width="200px"/>
+					<column label="${c:l('dateOfBirth')}" width="100px" />
+					<column label="${c:l('phone')}" width="100px"/>
+					<column label="${c:l('address')}" />
+					<column width="130px">
+						<button label="${c:l('input-patient')}" id="addPatientButton" />
+					</column>
+				</columns>
+				<rows id="patientRows">
+
+				</rows>
+			</grid>
+			<paging id="patientPaging" />
+		</vlayout>
+	</window>
+</zk>

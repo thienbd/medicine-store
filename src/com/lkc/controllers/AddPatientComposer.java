@@ -1,6 +1,8 @@
 package com.lkc.controllers;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,10 +48,12 @@ public class AddPatientComposer extends GenericAutowireComposer {
 
 	private static final long serialVersionUID = 3236491490523512944L;
 	private Component component;
+	private boolean refreshField = true;
 
 	private Combobox fullNameCombobox;
 	private Datebox dateOfBirthDatebox;
 	private Textbox addressTextbox;
+	private Textbox phoneTextbox;
 	private Button saveButton;
 	private Button clearButton;
 
@@ -68,6 +72,7 @@ public class AddPatientComposer extends GenericAutowireComposer {
 	private ComposerUtil composerUtil;
 	private Examination selectedExamination;
 	private ExaminationDetailDAO examinationDetailDAO;
+	private ActionTrigger actionTrigger;
 
 	public AddPatientComposer() {
 		resolver = Util.getSpringDelegatingVariableResolver();
@@ -78,10 +83,18 @@ public class AddPatientComposer extends GenericAutowireComposer {
 		examinationDetailDAO = (ExaminationDetailDAO) resolver.resolveVariable("examinationDetailDAO");
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public void doAfterCompose(Component comp) throws Exception {
 		super.doAfterCompose(comp);
 		this.component = comp;
+		Map<String, Object> args = execution.getArg();
+		Patient patient = (Patient) args.get(ComposerUtil.PATIENT_KEY);
+		actionTrigger = (ActionTrigger) args.get(ComposerUtil.ACTION_KEY);
+		if (patient != null) {
+			refreshField = true;
+			refreshPatient(patient);
+		}
 		// Listener
 		addListener();
 		// Refresh
@@ -100,19 +113,17 @@ public class AddPatientComposer extends GenericAutowireComposer {
 				Combobox combobox = (Combobox) arg0.getTarget();
 				String value = combobox.getValue();
 				List<Patient> patients = patientDAO.loadByFullName(value);
+				Patient patient = null;
+				refreshField = false;
 				if (patients != null && patients.size() == 1) {
 					patient = patients.get(0);
-					addressTextbox.setValue(patient.getAddress());
-					dateOfBirthDatebox.setValue(patient.getDateOfBirth().getTime());
-					mapExamination.clear();
-					List<Examination> listExaminations = examinationDAO.loadByPatient(patient);
-					for (Examination examination : listExaminations) {
-						List<ExaminationDetail> examinationDetails = examinationDetailDAO.loadByExamination(examination);
-						mapExamination.put(examination, examinationDetails);
+					if (AddPatientComposer.this.patient.getId() != patient.getId()) {
+						refreshField = true;
+						refreshPatient(patient);
 					}
-					refreshExam();
 				} else {
 					patient = new Patient(System.currentTimeMillis());
+					refreshPatient(patient);
 				}
 			}
 		};
@@ -133,6 +144,12 @@ public class AddPatientComposer extends GenericAutowireComposer {
 			public void onEvent(Event arg0) throws Exception {
 				MessageUtil messageUtil = (MessageUtil) resolver.resolveVariable("messageUtil");
 				try {
+					patient.setFullName(fullNameCombobox.getValue());
+					Calendar calendar = new GregorianCalendar();
+					calendar.setTime(dateOfBirthDatebox.getValue());
+					patient.setDateOfBirth(calendar);
+					patient.setAddress(addressTextbox.getValue());
+					patient.setPhone(phoneTextbox.getValue());
 					patientDAO.saveOrUpdate(patient);
 					Set<Examination> examinations = mapExamination.keySet();
 					for (Examination examination : examinations) {
@@ -152,6 +169,13 @@ public class AddPatientComposer extends GenericAutowireComposer {
 					}
 					clear();
 					messageUtil.showMessage(Labels.getLabel("message"), Labels.getLabel("save") + " " + Labels.getLabel("success-lower"));
+					if (actionTrigger != null) {
+						try {
+							actionTrigger.doAction();
+						} catch (Throwable e) {
+							e.printStackTrace();
+						}
+					}
 				} catch (Exception e) {
 					e.printStackTrace();
 					messageUtil.showError(Labels.getLabel("error"), Labels.getLabel("save") + " " + Labels.getLabel("fail-lower"));
@@ -164,6 +188,7 @@ public class AddPatientComposer extends GenericAutowireComposer {
 		addressTextbox.setValue("");
 		fullNameCombobox.setValue("");
 		dateOfBirthDatebox.setValue(null);
+		phoneTextbox.setValue("");
 		mapExamination.clear();
 		mapRemoveWhenSave.clear();
 		refreshExam();
@@ -310,6 +335,7 @@ public class AddPatientComposer extends GenericAutowireComposer {
 						}
 					}
 					mapRemoveWhenSave.put(examination, examinationDetails2);
+					refreshExam();
 				}
 			});
 		}
@@ -387,6 +413,7 @@ public class AddPatientComposer extends GenericAutowireComposer {
 								examinationDetails2.add(examinationDetail);
 							}
 							mapRemoveWhenSave.put(temp, examinationDetails2);
+							refreshListMedicine();
 						}
 					});
 				}
@@ -442,4 +469,26 @@ public class AddPatientComposer extends GenericAutowireComposer {
 			refreshListMedicine();
 		}
 	}
+
+	public void refreshPatient(Patient patient) {
+		this.patient = patient;
+		if (refreshField) {
+			fullNameCombobox.setValue(patient.getFullName());
+			addressTextbox.setValue(patient.getAddress());
+			if (patient.getDateOfBirth() != null) {
+				dateOfBirthDatebox.setValue(patient.getDateOfBirth().getTime());
+			} else {
+				dateOfBirthDatebox.setValue(null);
+			}
+			phoneTextbox.setValue(patient.getPhone());
+		}
+		mapExamination.clear();
+		List<Examination> listExaminations = examinationDAO.loadByPatient(patient);
+		for (Examination examination : listExaminations) {
+			List<ExaminationDetail> examinationDetails = examinationDetailDAO.loadByExamination(examination);
+			mapExamination.put(examination, examinationDetails);
+		}
+		refreshExam();
+	}
+
 }

@@ -2,9 +2,9 @@
 <?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
 
 <zk xmlns:h="xhtml">
-	<style src="/css/main.css" />
-	
-	<window title="${c:l('app.title')}" border="normal" apply="com.lkc.controllers.AddPatientComposer" position="center" width="840px">
+
+	<window title="${c:l('input-patient')}" border="normal" apply="com.lkc.controllers.AddPatientComposer" position="center" width="840px">
+		<style src="/css/main.css" />
 		<vbox>
 			<hbox width="800px">
 				<grid width="400px">
@@ -21,11 +21,15 @@
 							<label value="${c:l('dateOfBirth')}: " />
 							<datebox id="dateOfBirthDatebox" width="80%" mold="rounded" format="medium" locale="vi" />
 						</row>
+						<row>
+							<label value="${c:l('phone')}: "/>
+							<textbox id="phoneTextbox" width="80%"/>
+						</row>
 					</rows>
 				</grid>
 				<vbox width="400px" style="margin-left:10px">
 					<label value="${c:l('address')}: " />
-					<textbox id="addressTextbox" multiline="true" width="400px" height="40px" mold="rounded" />
+					<textbox id="addressTextbox" multiline="true" width="400px" height="70px" mold="rounded" />
 				</vbox>
 			</hbox>
 			<hlayout>
