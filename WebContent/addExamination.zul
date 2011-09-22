@@ -22,6 +22,10 @@
 					<label value="${c:l('exam-cost')}:" />
 					<textbox id="examCostTextbox" width="98%" />
 				</row>
+				<row>
+					<label value="${c:l('next-appoint')}:"/>
+					<datebox id="nextAppointDatebox" width="98%" format="medium" locale="vi" />
+				</row>
 			</rows>
 		</grid>
 		<h:div style="text-align:center;margin-top:5px">
