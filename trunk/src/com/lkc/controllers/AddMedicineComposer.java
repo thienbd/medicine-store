@@ -94,14 +94,22 @@ public class AddMedicineComposer extends GenericAutowireComposer {
 							@Override
 							public void doAction() throws InterruptedException {
 								try {
+									medicine.setName(nameTextbox.getValue());
 									medicine.setPrice(Double.valueOf(priceTextbox.getValue()));
 									medicineDAO.update(medicine);
-									nameTextbox.setValue("");
-									priceTextbox.setValue("");
 									messageUtil.showMessage(Labels.getLabel("message"),
 											Labels.getLabel("save") + " " + Labels.getLabel("medicine-lower") + " \"" + medicine.getName()
 													+ "\" " + Labels.getLabel("success-lower"));
+									if (actionTrigger != null) {
+										try {
+											actionTrigger.doAction();
+										} catch (Throwable e) {
+											e.printStackTrace();
+										}
+									}
+									clear();
 								} catch (Exception e) {
+									e.printStackTrace();
 									messageUtil.showError(Labels.getLabel("error"),
 											Labels.getLabel("save") + " " + Labels.getLabel("medicine-lower") + " \"" + medicine.getName()
 													+ "\" " + Labels.getLabel("fail-lower"));
@@ -124,7 +132,16 @@ public class AddMedicineComposer extends GenericAutowireComposer {
 							messageUtil.showMessage(Labels.getLabel("message"),
 									Labels.getLabel("save") + " " + Labels.getLabel("medicine-lower") + " \"" + medicine.getName() + "\" "
 											+ Labels.getLabel("success-lower"));
+							if (actionTrigger != null) {
+								try {
+									actionTrigger.doAction();
+								} catch (Throwable e) {
+									e.printStackTrace();
+								}
+							}
+							clear();
 						} catch (Exception e) {
+							e.printStackTrace();
 							messageUtil.showError(Labels.getLabel("error"),
 									Labels.getLabel("save") + " " + Labels.getLabel("medicine-lower") + " \"" + medicine.getName() + "\" "
 											+ Labels.getLabel("fail-lower"));
@@ -132,26 +149,31 @@ public class AddMedicineComposer extends GenericAutowireComposer {
 					}
 				} else {
 					try {
+						medicine.setName(nameTextbox.getValue());
 						medicine.setPrice(Double.valueOf(priceTextbox.getValue()));
 						medicineDAO.update(medicine);
-						nameTextbox.setValue("");
-						priceTextbox.setValue("");
 						messageUtil.showMessage(Labels.getLabel("message"),
 								Labels.getLabel("save") + " " + Labels.getLabel("medicine-lower") + " \"" + medicine.getName() + "\" "
 										+ Labels.getLabel("success-lower"));
+						if (actionTrigger != null) {
+							try {
+								actionTrigger.doAction();
+							} catch (Throwable e) {
+								e.printStackTrace();
+							}
+						}
+						clear();
 					} catch (Exception e) {
+						e.printStackTrace();
 						messageUtil.showError(Labels.getLabel("error"), Labels.getLabel("save") + " " + Labels.getLabel("medicine-lower")
 								+ " \"" + medicine.getName() + "\" " + Labels.getLabel("fail-lower"));
 					}
 				}
-				if (actionTrigger != null) {
-					try {
-						actionTrigger.doAction();
-					} catch (Throwable e) {
-						e.printStackTrace();
-					}
-				}
 			}
 		});
+	}
+
+	private void clear() {
+		component.detach();
 	}
 }
