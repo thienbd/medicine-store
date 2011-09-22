@@ -16,16 +16,18 @@ public class Patient implements Serializable {
 	private String fullName;
 	private Calendar dateOfBirth;
 	private String address;
+	private String phone;
 
-	public Patient(long id, String fullName, Calendar dateOfBirth, String address) {
+	public Patient(long id, String fullName, Calendar dateOfBirth, String address, String phone) {
 		this.id = id;
 		this.fullName = fullName;
 		this.dateOfBirth = dateOfBirth;
 		this.address = address;
+		this.phone = phone;
 	}
 
 	public Patient(long id) {
-		this(id, "", null, "");
+		this(id, "", null, "", "");
 	}
 
 	public Patient() {
@@ -77,4 +79,13 @@ public class Patient implements Serializable {
 		}
 		return false;
 	}
+
+	public String getPhone() {
+		return phone;
+	}
+
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
+
 }
