@@ -34,6 +34,7 @@ public class AddExaminationComposer extends GenericAutowireComposer {
 	private Textbox dianogsisTextbox;
 	private Datebox examDateDatebox;
 	private Textbox examCostTextbox;
+	private Datebox nextAppointDatebox;
 	private Button closeButton;
 	private Button saveButton;
 
@@ -105,13 +106,16 @@ public class AddExaminationComposer extends GenericAutowireComposer {
 					User currentUser = Util.getCurrentUser();
 					Calendar examDate = new GregorianCalendar();
 					examDate.setTime(examDateDatebox.getValue());
+					Calendar nextAppoint = new GregorianCalendar();
+					nextAppoint.setTime(nextAppointDatebox.getValue());
 					if (examination == null) {
 						examination = new Examination(System.currentTimeMillis(), dianogsisTextbox.getValue(), examDate, currentUser,
-								Double.parseDouble(examCostTextbox.getValue()), patient);
+								Double.parseDouble(examCostTextbox.getValue()), patient, nextAppoint);
 					} else {
 						examination.setDianogsis(dianogsisTextbox.getValue());
 						examination.setExamDate(examDate);
 						examination.setExamCost(Double.valueOf(examCostTextbox.getValue()));
+						examination.setNextAppointment(nextAppoint);
 					}
 					component.setAttribute(EXAM_KEY, examination);
 					component.detach();

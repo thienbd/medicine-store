@@ -235,6 +235,8 @@ public class AddPatientComposer extends GenericAutowireComposer {
 		listhead.appendChild(doctorListheader);
 		Listheader examCostListheader = new Listheader(Labels.getLabel("exam-cost"));
 		listhead.appendChild(examCostListheader);
+		Listheader nextAppointListheader = new Listheader(Labels.getLabel("next-appoint"));
+		listhead.appendChild(nextAppointListheader);
 		Listheader actionListheader = new Listheader();
 		Button addExaminationButton = new Button(Labels.getLabel("add-examination"));
 		actionListheader.appendChild(addExaminationButton);
@@ -277,6 +279,8 @@ public class AddPatientComposer extends GenericAutowireComposer {
 			listitem.appendChild(doctorListcell);
 			Listcell examCostListcell = new Listcell(examination.getExamCost() + "");
 			listitem.appendChild(examCostListcell);
+			Listcell nextAppointListcell = new Listcell(Util.toString(examination.getNextAppointment(), false));
+			listitem.appendChild(nextAppointListcell);
 			Listcell actionCell = new Listcell();
 			Button editButton = new Button(Labels.getLabel("edit"));
 			Button deleteButton = new Button(Labels.getLabel("delete"));

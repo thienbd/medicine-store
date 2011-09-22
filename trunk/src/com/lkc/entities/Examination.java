@@ -22,18 +22,20 @@ public class Examination implements Serializable {
 	@ManyToOne(fetch = FetchType.EAGER)
 	private Patient patient;
 	private double examCost;
+	private Calendar nextAppointment;
 
-	public Examination(long id, String dianogsis, Calendar examDate, User doctor, double examCost, Patient patient) {
+	public Examination(long id, String dianogsis, Calendar examDate, User doctor, double examCost, Patient patient, Calendar nextAppointment) {
 		this.id = id;
 		this.dianogsis = dianogsis;
 		this.examDate = examDate;
 		this.doctor = doctor;
 		this.examCost = examCost;
 		this.patient = patient;
+		this.nextAppointment = nextAppointment;
 	}
 
 	public Examination(long id) {
-		this(id, "", null, null, 0, null);
+		this(id, "", null, null, 0, null, null);
 	}
 
 	public Examination() {
@@ -95,6 +97,14 @@ public class Examination implements Serializable {
 
 	public void setPatient(Patient patient) {
 		this.patient = patient;
+	}
+
+	public Calendar getNextAppointment() {
+		return nextAppointment;
+	}
+
+	public void setNextAppointment(Calendar nextAppointment) {
+		this.nextAppointment = nextAppointment;
 	}
 
 }
