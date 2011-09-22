@@ -82,7 +82,7 @@ public class Examination implements Serializable {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj != null && obj instanceof Examination) {
+		if ((obj != null) && (obj instanceof Examination)) {
 			Examination that = (Examination) obj;
 			return this.id == that.id;
 		}

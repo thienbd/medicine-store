@@ -30,7 +30,6 @@ public class AddExaminationComposer extends GenericAutowireComposer {
 
 	private static final long serialVersionUID = -4315562193832308696L;
 	public static String EXAM_KEY = "examination";
-	public static String SAVE_KEY = "save";
 
 	private Textbox dianogsisTextbox;
 	private Datebox examDateDatebox;
@@ -43,6 +42,7 @@ public class AddExaminationComposer extends GenericAutowireComposer {
 	private Component component;
 	private ActionTrigger actionTrigger;
 	private Patient patient;
+	private Examination examination;
 
 	public AddExaminationComposer() {
 		resolver = Util.getSpringDelegatingVariableResolver();
@@ -62,7 +62,14 @@ public class AddExaminationComposer extends GenericAutowireComposer {
 							+ ComposerUtil.ACTION_KEY + "\"");
 			comp.detach();
 		} else {
-			examDateDatebox.setValue(new Date());
+			examination = (Examination) args.get(EXAM_KEY);
+			if (examination == null) {
+				examDateDatebox.setValue(new Date());
+			} else {
+				dianogsisTextbox.setValue(examination.getDianogsis());
+				examDateDatebox.setValue(examination.getExamDate().getTime());
+				examCostTextbox.setValue(examination.getExamCost() + "");
+			}
 			// Constraint
 			addConstraint();
 			// Listener
@@ -98,22 +105,23 @@ public class AddExaminationComposer extends GenericAutowireComposer {
 					User currentUser = Util.getCurrentUser();
 					Calendar examDate = new GregorianCalendar();
 					examDate.setTime(examDateDatebox.getValue());
-					Examination examination = new Examination(System.currentTimeMillis(), dianogsisTextbox.getValue(), examDate,
-							currentUser, Double.parseDouble(examCostTextbox.getValue()), patient);
+					if (examination == null) {
+						examination = new Examination(System.currentTimeMillis(), dianogsisTextbox.getValue(), examDate, currentUser,
+								Double.parseDouble(examCostTextbox.getValue()), patient);
+					} else {
+						examination.setDianogsis(dianogsisTextbox.getValue());
+						examination.setExamDate(examDate);
+						examination.setExamCost(Double.valueOf(examCostTextbox.getValue()));
+					}
 					component.setAttribute(EXAM_KEY, examination);
-					component.setAttribute(SAVE_KEY, true);
 					component.detach();
 					if (actionTrigger != null) {
 						actionTrigger.doAction(component);
 					}
-					messageUtil.showMessage(Labels.getLabel("message"),
-							Labels.getLabel("add-examination") + " " + Labels.getLabel("success-lower"));
+					messageUtil.showMessage(Labels.getLabel("message"), Labels.getLabel("save") + " " + Labels.getLabel("success-lower"));
 				} catch (Throwable e) {
 					e.printStackTrace();
-					component.setAttribute(EXAM_KEY, null);
-					component.setAttribute(SAVE_KEY, false);
-					messageUtil.showError(Labels.getLabel("error"),
-							Labels.getLabel("add-examination") + " " + Labels.getLabel("fail-lower"));
+					messageUtil.showError(Labels.getLabel("error"), Labels.getLabel("save") + " " + Labels.getLabel("fail-lower"));
 				}
 			}
 		});

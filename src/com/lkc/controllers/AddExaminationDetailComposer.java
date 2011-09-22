@@ -31,7 +31,6 @@ import com.lkc.utils.Util;
 public class AddExaminationDetailComposer extends GenericAutowireComposer {
 	private static final long serialVersionUID = 8914061444109678764L;
 	public static String DETAIL_KEY = "detail";
-	public static String SAVE_KEY = "save";
 
 	private Component component;
 	private Combobox medicineCombobox;
@@ -46,6 +45,7 @@ public class AddExaminationDetailComposer extends GenericAutowireComposer {
 	private Examination examination;
 	private MessageUtil messageUtil;
 	private MedicineDAO medicineDAO;
+	private ExaminationDetail examinationDetail;
 
 	public AddExaminationDetailComposer() {
 		resolver = Util.getSpringDelegatingVariableResolver();
@@ -66,6 +66,12 @@ public class AddExaminationDetailComposer extends GenericAutowireComposer {
 							+ " \"" + ComposerUtil.ACTION_KEY + "\"");
 			comp.detach();
 		} else {
+			examinationDetail = (ExaminationDetail) args.get(DETAIL_KEY);
+			if (examinationDetail != null) {
+				medicineCombobox.setValue(examinationDetail.getMedicine().getName());
+				quantityTextbox.setValue(examinationDetail.getQuantity() + "");
+				usingTextbox.setValue(examinationDetail.getUsingGuide());
+			}
 			// Constraint
 			addConstraint();
 			// Refresh
@@ -118,20 +124,23 @@ public class AddExaminationDetailComposer extends GenericAutowireComposer {
 			public void onEvent(Event arg0) throws Exception {
 				try {
 					Medicine medicine = medicineDAO.loadByField("name", medicineCombobox.getValue()).get(0);
-					ExaminationDetail examinationDetail = new ExaminationDetail(System.currentTimeMillis(), examination, medicine, Integer
-							.parseInt(quantityTextbox.getValue()), usingTextbox.getValue());
+					if (examinationDetail == null) {
+						examinationDetail = new ExaminationDetail(System.currentTimeMillis(), examination, medicine, Integer
+								.parseInt(quantityTextbox.getValue()), usingTextbox.getValue());
+					} else {
+						examinationDetail.setMedicine(medicine);
+						examinationDetail.setQuantity(Integer.parseInt(quantityTextbox.getValue()));
+						examinationDetail.setUsingGuide(usingTextbox.getValue());
+					}
 					component.setAttribute(DETAIL_KEY, examinationDetail);
-					component.setAttribute(SAVE_KEY, true);
 					component.detach();
 					if (actionTrigger != null) {
 						actionTrigger.doAction(component);
 					}
-					messageUtil.showMessage(Labels.getLabel("message"),
-							Labels.getLabel("add-examination-detail") + " " + Labels.getLabel("success-lower"));
+					messageUtil.showMessage(Labels.getLabel("message"), Labels.getLabel("save") + " " + Labels.getLabel("success-lower"));
 				} catch (Throwable e) {
 					e.printStackTrace();
-					messageUtil.showError(Labels.getLabel("error"),
-							Labels.getLabel("add-examination-detail") + " " + Labels.getLabel("fail-lower"));
+					messageUtil.showError(Labels.getLabel("error"), Labels.getLabel("save") + " " + Labels.getLabel("fail-lower"));
 				}
 			}
 		});

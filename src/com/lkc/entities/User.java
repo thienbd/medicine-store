@@ -78,7 +78,7 @@ public class User implements Serializable {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj != null && obj instanceof User) {
+		if ((obj != null) && (obj instanceof User)) {
 			User that = (User) obj;
 			return this.id == that.id;
 		}

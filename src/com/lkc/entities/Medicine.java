@@ -55,7 +55,7 @@ public class Medicine implements Serializable {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj != null && obj instanceof Medicine) {
+		if ((obj != null) && (obj instanceof Medicine)) {
 			Medicine that = (Medicine) obj;
 			return this.id == that.id;
 		}
