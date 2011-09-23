@@ -13,6 +13,7 @@ import org.springframework.orm.hibernate3.HibernateTemplate;
 
 import com.lkc.entities.Examination;
 import com.lkc.entities.Patient;
+import com.lkc.utils.Util;
 
 @SuppressWarnings("unchecked")
 public class ExaminationDAO extends GenericDAO<Examination> {
@@ -52,5 +53,33 @@ public class ExaminationDAO extends GenericDAO<Examination> {
 
 	public long countByCalendar(final Calendar fromDate, final Calendar toDate) {
 		return countByDate(fromDate.getTime(), toDate.getTime());
+	}
+
+	public double sumByCalendar(Calendar fromCalendar, Calendar toCalendar) {
+		return sumByDate(fromCalendar.getTime(), toCalendar.getTime());
+	}
+
+	private double sumByDate(final Date fromDate, final Date toDate) {
+		HibernateTemplate hibernateTemplate = getHibernateTemplate();
+		double result = hibernateTemplate.execute(new HibernateCallback<Double>() {
+			@Override
+			public Double doInHibernate(Session session) throws HibernateException, SQLException {
+				String sql = "from " + entityBeanType.getSimpleName() + " ex where ex.examDate>=:fromDate and ex.examDate<=:toDate";
+				Query query = session.createQuery(sql);
+				query.setDate("fromDate", fromDate);
+				query.setDate("toDate", toDate);
+				List<Examination> examinations = query.list();
+				double result = 0;
+				ExaminationDetailDAO examinationDetailDAO = (ExaminationDetailDAO) Util.getSpringDelegatingVariableResolver()
+						.resolveVariable("examinationDetailDAO");
+				for (Examination examination : examinations) {
+					double temp = examination.getExamCost();
+					temp += examinationDetailDAO.sumByExamination(examination);
+					result += temp;
+				}
+				return result;
+			}
+		});
+		return result;
 	}
 }

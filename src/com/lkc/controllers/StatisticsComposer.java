@@ -1,5 +1,6 @@
 package com.lkc.controllers;
 
+import java.text.DecimalFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -88,6 +89,8 @@ public class StatisticsComposer extends GenericAutowireComposer {
 						new Object[] { Util.toString(fromCalendar, false), Util.toString(toCalendar, false) })
 						+ ": ");
 				patientNumberValue.setValue(String.valueOf(examinationDAO.countByCalendar(fromCalendar, toCalendar)));
+				DecimalFormat decimalFormat = new DecimalFormat("#,##0.00");
+				tradeValue.setValue(decimalFormat.format(examinationDAO.sumByCalendar(fromCalendar, toCalendar)));
 				resultPanel.setVisible(true);
 			}
 		});
