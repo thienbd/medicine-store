@@ -2,7 +2,7 @@
 <?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
 
 <zk>
-	<window title="${c:l('statistics')}" border="normal" width="400px" apply="com.lkc.controllers.StatisticsComposer">
+	<window title="${c:l('statistics')}" border="normal" width="500px" apply="com.lkc.controllers.StatisticsComposer">
 		<panel border="normal" title="${c:l('statistics-data')}" style="margin-top:10px;" collapsible="true">
 			<panelchildren>
 				<grid>
@@ -11,7 +11,6 @@
 						<column />
 					</columns>
 					<rows>
-						0
 						<row>
 							<label value="${c:l('from-date')}: " />
 							<datebox format="medium" locale="vi" id="fromDatebox" width="90%" />
@@ -33,16 +32,16 @@
 				<grid>
 					<columns>
 						<column />
-						<column />
+						<column width="150px" />
 					</columns>
 					<rows>
 						<row>
 							<label id="traceLabel" />
-							<label style="color:blue;" id="tradeValue" />
+							<label style="color:blue;text-align:right;" id="tradeValue" />
 						</row>
 						<row>
 							<label id="patientNumberLabel" />
-							<label style="color:blue;" id="patientNumberValue" />
+							<label style="color:blue;text-align:right;" id="patientNumberValue" />
 						</row>
 					</rows>
 				</grid>
