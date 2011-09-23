@@ -113,11 +113,10 @@ public class PatientManagementComposer extends GenericAutowireComposer {
 			loadPatientPage(null);
 			listPatients = patientDAO.load((currentPage - 1) * patientPerPage, patientPerPage);
 		}
-		int i = 0;
 		for (final Patient patient : listPatients) {
 			Row row = new Row();
 			patientRows.appendChild(row);
-			Label nobLabel = new Label(String.valueOf(++i));
+			Label nobLabel = new Label(String.valueOf(patient.getId()));
 			row.appendChild(nobLabel);
 			Label fullnameLabel = new Label(patient.getFullName());
 			row.appendChild(fullnameLabel);
