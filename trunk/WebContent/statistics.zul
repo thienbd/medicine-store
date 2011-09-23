@@ -37,11 +37,11 @@
 					<rows>
 						<row>
 							<label id="traceLabel" />
-							<label style="color:blue;text-align:right;" id="tradeValue" />
+							<label id="tradeValue" style="text-align:right;color:blue;" />
 						</row>
 						<row>
 							<label id="patientNumberLabel" />
-							<label style="color:blue;text-align:right;" id="patientNumberValue" />
+							<label id="patientNumberValue" style="text-align:right;color:blue;" />
 						</row>
 					</rows>
 				</grid>
