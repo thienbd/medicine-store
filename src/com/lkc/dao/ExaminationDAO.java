@@ -1,6 +1,8 @@
 package com.lkc.dao;
 
 import java.sql.SQLException;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import org.hibernate.HibernateException;
@@ -30,5 +32,25 @@ public class ExaminationDAO extends GenericDAO<Examination> {
 			}
 		});
 		return result;
+	}
+
+	public long countByDate(final Date fromDate, final Date toDate) {
+		HibernateTemplate hibernateTemplate = getHibernateTemplate();
+		long result = hibernateTemplate.execute(new HibernateCallback<Long>() {
+			@Override
+			public Long doInHibernate(Session arg0) throws HibernateException, SQLException {
+				String sql = "select count(distinct ex.patient) from " + entityBeanType.getSimpleName()
+						+ " ex where ex.examDate>=:fromDate and ex.examDate<=:toDate";
+				Query query = arg0.createQuery(sql);
+				query.setDate("fromDate", fromDate);
+				query.setDate("toDate", toDate);
+				return (Long) query.list().get(0);
+			}
+		});
+		return result;
+	}
+
+	public long countByCalendar(final Calendar fromDate, final Calendar toDate) {
+		return countByDate(fromDate.getTime(), toDate.getTime());
 	}
 }

@@ -1,6 +1,8 @@
 package com.lkc.controllers;
 
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
@@ -9,11 +11,15 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.SerializableEventListener;
 import org.zkoss.zk.ui.util.GenericAutowireComposer;
+import org.zkoss.zkplus.spring.DelegatingVariableResolver;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Panel;
+
+import com.lkc.dao.ExaminationDAO;
+import com.lkc.utils.Util;
 
 public class StatisticsComposer extends GenericAutowireComposer {
 
@@ -29,8 +35,12 @@ public class StatisticsComposer extends GenericAutowireComposer {
 	private Label patientNumberLabel;
 	private Label patientNumberValue;
 
-	public StatisticsComposer() {
+	private DelegatingVariableResolver resolver;
+	private ExaminationDAO examinationDAO;
 
+	public StatisticsComposer() {
+		resolver = Util.getSpringDelegatingVariableResolver();
+		examinationDAO = (ExaminationDAO) resolver.resolveVariable("examinationDAO");
 	}
 
 	@Override
@@ -38,7 +48,7 @@ public class StatisticsComposer extends GenericAutowireComposer {
 		super.doAfterCompose(comp);
 		// init
 		init();
-		//Listener
+		// Listener
 		addListener();
 	}
 
@@ -60,15 +70,25 @@ public class StatisticsComposer extends GenericAutowireComposer {
 		toDatebox.setConstraint(nonEmptyConstraint);
 		resultPanel.setVisible(false);
 	}
-	
+
 	private void addListener() {
 		process.addEventListener(Events.ON_CLICK, new SerializableEventListener() {
 			private static final long serialVersionUID = 1206098005476756416L;
 
 			@Override
 			public void onEvent(Event arg0) throws Exception {
-				// TODO Auto-generated method stub
-				
+				Calendar fromCalendar = new GregorianCalendar();
+				Calendar toCalendar = new GregorianCalendar();
+				fromCalendar.setTime(fromDatebox.getValue());
+				toCalendar.setTime(toDatebox.getValue());
+				patientNumberLabel.setValue(Labels.getLabel("num-of-patient-from-to", new Object[] { Util.toString(fromCalendar, false),
+						Util.toString(toCalendar, false) })
+						+ ": ");
+				traceLabel.setValue(Labels.getLabel("trace-from-to",
+						new Object[] { Util.toString(fromCalendar, false), Util.toString(toCalendar, false) })
+						+ ": ");
+				patientNumberValue.setValue(String.valueOf(examinationDAO.countByCalendar(fromCalendar, toCalendar)));
+				resultPanel.setVisible(true);
 			}
 		});
 	}
