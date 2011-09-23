@@ -62,6 +62,7 @@ public class AddPatientComposer extends GenericAutowireComposer {
 	private Rows medicineListRows;
 	private Panel medicinesPanel;
 	private Button addExaminationDetailButton;
+	private Label examTotalCost;
 
 	private DelegatingVariableResolver resolver;
 	private ExaminationDAO examinationDAO;
@@ -348,16 +349,19 @@ public class AddPatientComposer extends GenericAutowireComposer {
 
 	private void refreshListMedicine() {
 		composerUtil.removeAllChilds(medicineListRows);
+		double totalCost = 0;
 		if (selectedExamination == null) {
 			medicinesPanel.setVisible(false);
 		} else {
 			medicinesPanel.setVisible(true);
 			final Examination temp = selectedExamination;
+			totalCost = temp.getExamCost();
 			List<ExaminationDetail> details = mapExamination.get(selectedExamination);
 			if (details != null) {
 				int i = 0;
 				for (final ExaminationDetail examinationDetail : details) {
 					Medicine medicine = examinationDetail.getMedicine();
+					totalCost += medicine.getPrice();
 					Row row = new Row();
 					medicineListRows.appendChild(row);
 					Label nobLabel = new Label("" + (++i));
@@ -422,6 +426,7 @@ public class AddPatientComposer extends GenericAutowireComposer {
 					});
 				}
 			}
+			examTotalCost.setValue(Labels.getLabel("exam-total-cost", new Object[] { temp.getExamDate(), totalCost }));
 		}
 		final Examination temp = selectedExamination;
 		composerUtil.removeAllEvent(addExaminationDetailButton, Events.ON_CLICK);
