@@ -118,7 +118,7 @@ public class MedicineManagementComposer extends GenericAutowireComposer {
 		for (final Medicine medicine : listMedicines) {
 			Row row = new Row();
 			medicineRows.appendChild(row);
-			Label nobLabel = new Label(String.valueOf(++i));
+			Label nobLabel = new Label(String.valueOf((currentPage - 1) * medicinePerPage + (++i)));
 			row.appendChild(nobLabel);
 			Label nameLabel = new Label(medicine.getName());
 			row.appendChild(nameLabel);

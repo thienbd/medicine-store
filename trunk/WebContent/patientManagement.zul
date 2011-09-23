@@ -11,7 +11,7 @@
 			</hlayout>
 			<grid emptyMessage="${c:l('list-empty')}">
 				<columns>
-					<column label="${c:l('nob')}" width="50px" />
+					<column label="${c:l('id')}" width="50px" />
 					<column label="${c:l('fullname')}" width="200px"/>
 					<column label="${c:l('dateOfBirth')}" width="100px" />
 					<column label="${c:l('phone')}" width="100px"/>
