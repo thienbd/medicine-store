@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="medicine_store_bill" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
 	<property name="ireport.zoom" value="1.0"/>
-	<property name="ireport.x" value="21"/>
-	<property name="ireport.y" value="48"/>
+	<property name="ireport.x" value="97"/>
+	<property name="ireport.y" value="144"/>
 	<style name="table">
 		<box>
 			<pen lineWidth="1.0" lineColor="#000000"/>
@@ -43,11 +43,19 @@
 			<pen lineWidth="0.5" lineColor="#000000"/>
 		</box>
 	</style>
-	<subDataset name="Table Dataset 1"/>
-	<subDataset name="Table Dataset 2"/>
 	<parameter name="store_name" class="java.lang.String"/>
 	<parameter name="address" class="java.lang.String"/>
 	<parameter name="phone" class="java.lang.String"/>
+	<field name="patientId" class="java.lang.Long">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="patientName" class="java.lang.String"/>
+	<field name="dateOfBirth" class="java.lang.String"/>
+	<field name="phone" class="java.lang.String"/>
+	<field name="address" class="java.lang.String"/>
+	<field name="doctor" class="java.lang.String"/>
+	<field name="nextAppoint" class="java.lang.String"/>
+	<field name="dianogsis" class="java.lang.String"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -91,85 +99,91 @@
 		</band>
 	</pageHeader>
 	<columnHeader>
-		<band height="144" splitType="Stretch">
+		<band height="134" splitType="Stretch">
 			<staticText>
-				<reportElement x="27" y="7" width="81" height="20"/>
+				<reportElement x="10" y="9" width="81" height="20"/>
 				<textElement/>
 				<text><![CDATA[Mã bện nhân:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="27" y="29" width="81" height="20"/>
+				<reportElement x="10" y="31" width="81" height="20"/>
 				<textElement/>
 				<text><![CDATA[Tên bện nhân:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="27" y="51" width="81" height="20"/>
+				<reportElement x="10" y="53" width="81" height="20"/>
 				<textElement/>
 				<text><![CDATA[Ngày sinh:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="27" y="97" width="81" height="20"/>
+				<reportElement x="10" y="75" width="81" height="20"/>
 				<textElement/>
 				<text><![CDATA[Địa chỉ:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="27" y="75" width="81" height="20"/>
+				<reportElement x="281" y="9" width="81" height="20"/>
 				<textElement/>
 				<text><![CDATA[Điện thoại:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="298" y="7" width="81" height="20"/>
-				<textElement/>
-				<text><![CDATA[Ngày khám:]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="298" y="30" width="81" height="20"/>
+				<reportElement x="281" y="32" width="81" height="20"/>
 				<textElement/>
 				<text><![CDATA[Bác sỹ:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="298" y="52" width="81" height="19"/>
+				<reportElement x="281" y="54" width="81" height="19"/>
 				<textElement/>
 				<text><![CDATA[Ngày tái khám:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="27" y="119" width="81" height="20"/>
+				<reportElement x="281" y="75" width="81" height="20"/>
 				<textElement/>
 				<text><![CDATA[Chẩn đoán:]]></text>
 			</staticText>
+			<textField>
+				<reportElement x="92" y="9" width="171" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{patientId}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="92" y="29" width="171" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{patientName}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="92" y="53" width="171" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{dateOfBirth}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="92" y="73" width="171" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{address}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="362" y="33" width="180" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{doctor}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="362" y="9" width="180" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{phone}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="362" y="55" width="180" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{nextAppoint}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="362" y="73" width="180" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{dianogsis}]]></textFieldExpression>
+			</textField>
 		</band>
 	</columnHeader>
 	<detail>
-		<band height="92" splitType="Stretch">
-			<componentElement>
-				<reportElement key="table 1" style="table 1" x="70" y="7" width="360" height="80"/>
-				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
-					<datasetRun subDataset="Table Dataset 2">
-						<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.JREmptyDataSource(1)]]></dataSourceExpression>
-					</datasetRun>
-					<jr:column width="90">
-						<jr:columnHeader style="table 1_CH" height="30"/>
-						<jr:columnFooter style="table 1_CH" height="30"/>
-						<jr:detailCell style="table 1_TD" height="20"/>
-					</jr:column>
-					<jr:column width="90">
-						<jr:columnHeader style="table 1_CH" height="30"/>
-						<jr:columnFooter style="table 1_CH" height="30"/>
-						<jr:detailCell style="table 1_TD" height="20"/>
-					</jr:column>
-					<jr:column width="90">
-						<jr:columnHeader style="table 1_CH" height="30"/>
-						<jr:columnFooter style="table 1_CH" height="30"/>
-						<jr:detailCell style="table 1_TD" height="20"/>
-					</jr:column>
-					<jr:column width="90">
-						<jr:columnHeader style="table 1_CH" height="30"/>
-						<jr:columnFooter style="table 1_CH" height="30"/>
-						<jr:detailCell style="table 1_TD" height="20"/>
-					</jr:column>
-				</jr:table>
-			</componentElement>
-		</band>
+		<band height="80" splitType="Stretch"/>
 	</detail>
 	<columnFooter>
 		<band height="45" splitType="Stretch"/>

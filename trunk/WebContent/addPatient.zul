@@ -53,6 +53,7 @@
 
 						</rows>
 					</grid>
+					<label id="examTotalCost"/>
 				</panelchildren>
 			</panel>
 			<h:div style="margin-top:5px;text-align:center;">
