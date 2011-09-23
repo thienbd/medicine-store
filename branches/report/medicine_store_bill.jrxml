@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="medicine_store_bill" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
 	<property name="ireport.zoom" value="1.0"/>
-	<property name="ireport.x" value="97"/>
-	<property name="ireport.y" value="144"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="69"/>
 	<style name="table">
 		<box>
 			<pen lineWidth="1.0" lineColor="#000000"/>
@@ -56,6 +56,11 @@
 	<field name="doctor" class="java.lang.String"/>
 	<field name="nextAppoint" class="java.lang.String"/>
 	<field name="dianogsis" class="java.lang.String"/>
+	<field name="nob" class="java.lang.String"/>
+	<field name="medicineName" class="java.lang.String"/>
+	<field name="medicineQuantity" class="java.lang.String"/>
+	<field name="total" class="java.lang.String"/>
+	<field name="examDate" class="java.lang.String"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -79,27 +84,27 @@
 				<textElement/>
 				<textFieldExpression><![CDATA[$P{phone}]]></textFieldExpression>
 			</textField>
-			<textField>
-				<reportElement x="47" y="32" width="121" height="20"/>
-				<textElement/>
-				<textFieldExpression><![CDATA[new Date()]]></textFieldExpression>
-			</textField>
 			<staticText>
 				<reportElement x="10" y="32" width="37" height="20"/>
 				<textElement/>
 				<text><![CDATA[Ngày:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="223" y="91" width="156" height="37"/>
+				<reportElement x="182" y="86" width="156" height="37"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font size="20"/>
 				</textElement>
 				<text><![CDATA[Đơn thuốc]]></text>
 			</staticText>
+			<textField>
+				<reportElement x="47" y="31" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{examDate}]]></textFieldExpression>
+			</textField>
 		</band>
 	</pageHeader>
 	<columnHeader>
-		<band height="134" splitType="Stretch">
+		<band height="139" splitType="Stretch">
 			<staticText>
 				<reportElement x="10" y="9" width="81" height="20"/>
 				<textElement/>
@@ -180,13 +185,50 @@
 				<textElement/>
 				<textFieldExpression><![CDATA[$F{dianogsis}]]></textFieldExpression>
 			</textField>
+			<staticText>
+				<reportElement x="93" y="119" width="62" height="20"/>
+				<textElement/>
+				<text><![CDATA[STT]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="155" y="119" width="183" height="20"/>
+				<textElement/>
+				<text><![CDATA[Tên thuốc]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="338" y="119" width="100" height="20"/>
+				<textElement/>
+				<text><![CDATA[Số lượng]]></text>
+			</staticText>
 		</band>
 	</columnHeader>
 	<detail>
-		<band height="80" splitType="Stretch"/>
+		<band height="20" splitType="Stretch">
+			<textField>
+				<reportElement x="93" y="0" width="62" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{nob}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="155" y="0" width="183" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{medicineName}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="338" y="0" width="100" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{medicineQuantity}]]></textFieldExpression>
+			</textField>
+		</band>
 	</detail>
 	<columnFooter>
-		<band height="45" splitType="Stretch"/>
+		<band height="29" splitType="Stretch">
+			<textField>
+				<reportElement x="238" y="7" width="304" height="20"/>
+				<textElement/>
+				<textFieldExpression><![CDATA[$F{total}]]></textFieldExpression>
+			</textField>
+		</band>
 	</columnFooter>
 	<pageFooter>
 		<band height="54" splitType="Stretch"/>
