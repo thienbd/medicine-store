@@ -2,33 +2,50 @@
 <?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
 
 <zk>
-	<window title="${c:l('statistics')}" border="normal" width="400px">
+	<window title="${c:l('statistics')}" border="normal" width="400px" apply="com.lkc.controllers.StatisticsComposer">
 		<panel border="normal" title="${c:l('statistics-data')}" style="margin-top:10px;" collapsible="true">
 			<panelchildren>
 				<grid>
 					<columns>
-						<column width="100px"/>
+						<column width="100px" />
 						<column />
 					</columns>
 					<rows>
+						0
 						<row>
 							<label value="${c:l('from-date')}: " />
-							<datebox format="medium" locale="vi" id="fromDatebox" width="90%"/>
+							<datebox format="medium" locale="vi" id="fromDatebox" width="90%" />
 						</row>
 						<row>
 							<label value="${c:l('to-date')}: " />
-							<datebox format="medium" locale="vi" id="toDatebox" width="90%"/>
+							<datebox format="medium" locale="vi" id="toDatebox" width="90%" />
 						</row>
 						<row spans="2">
-							<button label="${c:l('process')}"/>
+							<button label="${c:l('process')}" id="process" />
 						</row>
 					</rows>
 				</grid>
 			</panelchildren>
 		</panel>
-		<panel border="normal" title="${c:l('statistics-result')}" style="margin-top:20px;margin-bottom:10px;" collapsible="true">
+		<panel border="normal" title="${c:l('statistics-result')}" style="margin-top:20px;margin-bottom:10px;" collapsible="true"
+			id="resultPanel">
 			<panelchildren>
-
+				<grid>
+					<columns>
+						<column />
+						<column />
+					</columns>
+					<rows>
+						<row>
+							<label id="traceLabel" />
+							<label style="color:blue;" id="tradeValue" />
+						</row>
+						<row>
+							<label id="patientNumberLabel" />
+							<label style="color:blue;" id="patientNumberValue" />
+						</row>
+					</rows>
+				</grid>
 			</panelchildren>
 		</panel>
 	</window>
