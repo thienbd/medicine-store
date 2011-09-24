@@ -4,11 +4,15 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
+import org.zkoss.util.resource.Labels;
+
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRField;
 
+import com.lkc.entities.Examination;
 import com.lkc.entities.ExaminationDetail;
+import com.lkc.entities.Medicine;
 import com.lkc.entities.Patient;
 import com.lkc.utils.Util;
 
@@ -17,15 +21,15 @@ public class BillReporter implements Serializable, JRDataSource {
 	private static final long serialVersionUID = 3382701170574083996L;
 
 	private Patient patient;
-	private Exception exception;
+	private Examination examination;
 	private List<ExaminationDetail> details;
 	private Map<String, Object> params;
 
-	private int currentIndex = 0;
+	private int currentIndex = -1;
 
-	public BillReporter(Patient patient, Exception exception, List<ExaminationDetail> details, Map<String, Object> params) {
+	public BillReporter(Patient patient, Examination examination, List<ExaminationDetail> details, Map<String, Object> params) {
 		this.patient = patient;
-		this.exception = exception;
+		this.examination = examination;
 		this.details = details;
 		this.params = params;
 	}
@@ -38,12 +42,12 @@ public class BillReporter implements Serializable, JRDataSource {
 		this.patient = patient;
 	}
 
-	public Exception getException() {
-		return exception;
+	public Examination getExamination() {
+		return examination;
 	}
 
-	public void setException(Exception exception) {
-		this.exception = exception;
+	public void setExamination(Examination examination) {
+		this.examination = examination;
 	}
 
 	public List<ExaminationDetail> getDetails() {
@@ -72,12 +76,40 @@ public class BillReporter implements Serializable, JRDataSource {
 		if (name.equalsIgnoreCase("address")) {
 			return patient.getAddress();
 		}
-		return null;
+		if (name.equalsIgnoreCase("doctor")) {
+			return examination.getDoctor().getRealName();
+		}
+		if (name.equalsIgnoreCase("nextAppoint")) {
+			return Util.toString(examination.getNextAppointment(), false);
+		}
+		if (name.equalsIgnoreCase("dianogsis")) {
+			return examination.getDianogsis();
+		}
+		if (name.equalsIgnoreCase("examDate")) {
+			return Util.toString(examination.getExamDate(), false);
+		}
+		if (name.equalsIgnoreCase("nob")) {
+			return currentIndex + 1;
+		}
+		if (name.equalsIgnoreCase("total")) {
+			double total = examination.getExamCost();
+			for (ExaminationDetail examinationDetail : details) {
+				total += examinationDetail.getQuantity() * examinationDetail.getMedicine().getPrice();
+			}
+			return Labels.getLabel("total-cost", new Object[] { total });
+		}
+		ExaminationDetail examinationDetail = details.get(currentIndex);
+		if (name.equalsIgnoreCase("medicineQuantity")) {
+			return examinationDetail.getQuantity();
+		}
+		Medicine medicine = examinationDetail.getMedicine();
+		return medicine.getName();
 	}
 
 	@Override
 	public boolean next() throws JRException {
-		return details.size() > currentIndex + 1;
+		boolean next = details.size() > ++currentIndex;
+		return next;
 	}
 
 	public Map<String, Object> getParams() {

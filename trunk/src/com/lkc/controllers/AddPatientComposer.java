@@ -361,7 +361,7 @@ public class AddPatientComposer extends GenericAutowireComposer {
 				int i = 0;
 				for (final ExaminationDetail examinationDetail : details) {
 					Medicine medicine = examinationDetail.getMedicine();
-					totalCost += medicine.getPrice();
+					totalCost += medicine.getPrice() * examinationDetail.getQuantity();
 					Row row = new Row();
 					medicineListRows.appendChild(row);
 					Label nobLabel = new Label("" + (++i));
