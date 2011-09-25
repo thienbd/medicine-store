@@ -5,7 +5,7 @@
        http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
 	<bean id="timeRomanFontFamily" class="net.sf.jasperreports.engine.fonts.SimpleFontFamily">
 		<property name="name" value="Times New Roman" />
-		<property name="normal" value="/WEB-INF/classes/fonts/Times.TTF" />
+		<property name="normal" value="fonts/Times.TTF" />
 		<property name="pdfEncoding" value="Identity-H" />
 		<property name="pdfEmbedded" value="true" />
 	</bean>
