@@ -358,4 +358,19 @@ public class Util {
 		}
 	}
 
+	@SuppressWarnings("rawtypes")
+	public static Object getLastElement(Map mapData) {
+		Object result = null;
+		Set<Object> setObjects = mapData.keySet();
+		int size = setObjects.size();
+		int i = 0;
+		for (Object obj : setObjects) {
+			result = obj;
+			if (i < size - 1) {
+				break;
+			}
+			i++;
+		}
+		return result;
+	}
 }

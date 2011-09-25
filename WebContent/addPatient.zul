@@ -60,6 +60,7 @@
 				<hlayout>
 					<button label="${c:l('save')}" id="saveButton" />
 					<button label="${c:l('clear')}" id="clearButton" />
+					<button label="${c:l('export')}" id="exportButton"/>
 				</hlayout>
 			</h:div>
 		</vbox>

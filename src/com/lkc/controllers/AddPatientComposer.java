@@ -1,5 +1,6 @@
 package com.lkc.controllers;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -7,6 +8,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperPrint;
 
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
@@ -19,6 +23,7 @@ import org.zkoss.zkplus.spring.DelegatingVariableResolver;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Datebox;
+import org.zkoss.zul.Filedownload;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Listbox;
@@ -40,6 +45,7 @@ import com.lkc.entities.Examination;
 import com.lkc.entities.ExaminationDetail;
 import com.lkc.entities.Medicine;
 import com.lkc.entities.Patient;
+import com.lkc.report.BillReporter;
 import com.lkc.utils.ComposerUtil;
 import com.lkc.utils.MessageUtil;
 import com.lkc.utils.Util;
@@ -56,6 +62,7 @@ public class AddPatientComposer extends GenericAutowireComposer {
 	private Textbox phoneTextbox;
 	private Button saveButton;
 	private Button clearButton;
+	private Button exportButton;
 
 	private Listbox examList;
 	private Label listMedicineLabel;
@@ -74,6 +81,7 @@ public class AddPatientComposer extends GenericAutowireComposer {
 	private Examination selectedExamination;
 	private ExaminationDetailDAO examinationDetailDAO;
 	private ActionTrigger actionTrigger;
+	private MessageUtil messageUtil;
 
 	public AddPatientComposer() {
 		resolver = Util.getSpringDelegatingVariableResolver();
@@ -82,6 +90,7 @@ public class AddPatientComposer extends GenericAutowireComposer {
 		patient = new Patient(System.currentTimeMillis());
 		composerUtil = (ComposerUtil) resolver.resolveVariable("composerUtil");
 		examinationDetailDAO = (ExaminationDetailDAO) resolver.resolveVariable("examinationDetailDAO");
+		messageUtil = (MessageUtil) resolver.resolveVariable("messageUtil");
 	}
 
 	@SuppressWarnings("unchecked")
@@ -183,6 +192,29 @@ public class AddPatientComposer extends GenericAutowireComposer {
 				}
 			}
 		});
+		exportButton.addEventListener(Events.ON_CLICK, new SerializableEventListener() {
+			private static final long serialVersionUID = -2509188697653576515L;
+
+			@Override
+			public void onEvent(Event arg0) throws Exception {
+				Examination examination = getLastExamination();
+				if (examination != null) {
+					List<ExaminationDetail> details = mapExamination.get(examination);
+					Map<String, Object> params = new HashMap<String, Object>();
+					params.put("store_name", BillReporter.store_name);
+					params.put("address", BillReporter.address);
+					params.put("phone", BillReporter.phone);
+					BillReporter billReporter = new BillReporter(patient, examination, details, params);
+					JasperPrint jasperPrint = billReporter.process();
+					ByteArrayOutputStream baos = new ByteArrayOutputStream();
+					JasperExportManager.exportReportToPdfStream(jasperPrint, baos);
+					byte[] data = baos.toByteArray();
+					Filedownload.save(data, "application/pdf'", "Toa Thuoc.pdf");
+				} else {
+					messageUtil.showError(Labels.getLabel("error"), Labels.getLabel("no-data-export"));
+				}
+			}
+		});
 	}
 
 	public void clear() {
@@ -266,6 +298,7 @@ public class AddPatientComposer extends GenericAutowireComposer {
 		// End header
 		selectedExamination = null;
 		Set<Examination> setExaminations = mapExamination.keySet();
+		exportButton.setVisible(setExaminations.size() > 0);
 		int i = 0;
 		for (final Examination examination : setExaminations) {
 			Listitem listitem = new Listitem();
@@ -426,7 +459,8 @@ public class AddPatientComposer extends GenericAutowireComposer {
 					});
 				}
 			}
-			examTotalCost.setValue(Labels.getLabel("exam-total-cost", new Object[] { temp.getExamDate(), totalCost }));
+			examTotalCost
+					.setValue(Labels.getLabel("exam-total-cost", new Object[] { Util.toString(temp.getExamDate(), false), totalCost }));
 		}
 		final Examination temp = selectedExamination;
 		composerUtil.removeAllEvent(addExaminationDetailButton, Events.ON_CLICK);
@@ -500,4 +534,18 @@ public class AddPatientComposer extends GenericAutowireComposer {
 		refreshExam();
 	}
 
+	private Examination getLastExamination() {
+		Set<Examination> setExaminations = mapExamination.keySet();
+		int size = setExaminations.size();
+		int i = 0;
+		Examination examination = null;
+		for (Examination ex : setExaminations) {
+			examination = ex;
+			if (i < size - 1) {
+				break;
+			}
+			i++;
+		}
+		return examination;
+	}
 }

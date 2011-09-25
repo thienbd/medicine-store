@@ -82,4 +82,23 @@ public class ExaminationDAO extends GenericDAO<Examination> {
 		});
 		return result;
 	}
+
+	public Examination loadLastByPatient(final Patient patient) {
+		HibernateTemplate hibernateTemplate = getHibernateTemplate();
+		Examination result = hibernateTemplate.execute(new HibernateCallback<Examination>() {
+			@Override
+			public Examination doInHibernate(Session session) throws HibernateException, SQLException {
+				String sql = "from " + entityBeanType.getSimpleName() + " ex where ex.patient=:patient order by ex.examDate desc limit 1";
+				Query query = session.createQuery(sql);
+				query.setEntity("patient", patient);
+				List<Examination> examinations = query.list();
+				if (examinations.size() > 0) {
+					return examinations.get(0);
+				} else {
+					return null;
+				}
+			}
+		});
+		return result;
+	}
 }
