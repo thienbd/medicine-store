@@ -4,11 +4,17 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
-import org.zkoss.util.resource.Labels;
-
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRField;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+
+import org.zkoss.util.resource.Labels;
+import org.zkoss.zk.ui.Execution;
+import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.Session;
+import org.zkoss.zk.ui.WebApp;
 
 import com.lkc.entities.Examination;
 import com.lkc.entities.ExaminationDetail;
@@ -19,6 +25,10 @@ import com.lkc.utils.Util;
 public class BillReporter implements Serializable, JRDataSource {
 
 	private static final long serialVersionUID = 3382701170574083996L;
+
+	public static String store_name = Labels.getLabel("store-name");
+	public static String address = Labels.getLabel("store-address");
+	public static String phone = Labels.getLabel("phone") + ": " + Labels.getLabel("store-phone");
 
 	private Patient patient;
 	private Examination examination;
@@ -128,4 +138,14 @@ public class BillReporter implements Serializable, JRDataSource {
 		this.currentIndex = currentIndex;
 	}
 
+	public JasperPrint process() throws JRException {
+		Execution execution = Executions.getCurrent();
+		Session session = execution.getSession();
+		WebApp webApp = session.getWebApp();
+		params.put("net.sf.jasperreports.extension.registry.factory.fonts",
+				"net.sf.jasperreports.engine.fonts.SimpleFontExtensionsRegistryFactory");
+		params.put("net.sf.jasperreports.extension.simple.font.families.ireport", "/WEB-INF/CLASSES/fonts.xml");
+		JasperPrint jasperPrint = JasperFillManager.fillReport(webApp.getResourceAsStream("/report/bill.jasper"), params, this);
+		return jasperPrint;
+	}
 }
