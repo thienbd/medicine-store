@@ -112,8 +112,14 @@ public class BillReporter implements Serializable, JRDataSource {
 		if (name.equalsIgnoreCase("medicineQuantity")) {
 			return examinationDetail.getQuantity();
 		}
+		if (name.equalsIgnoreCase("examPrice")) {
+			return examination.getExamCost();
+		}
 		Medicine medicine = examinationDetail.getMedicine();
-		return medicine.getName();
+		if (name.equalsIgnoreCase("medicineName")) {
+			return medicine.getName();
+		}
+		return medicine.getPrice() * examinationDetail.getQuantity();
 	}
 
 	@Override
