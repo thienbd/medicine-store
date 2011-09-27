@@ -50,7 +50,7 @@ public class PatientManagementComposer extends GenericAutowireComposer {
 	private Paging patientPaging;
 	private int currentPage = 1;
 	private int numOfPage = 1;
-	private int patientPerPage = 10;
+	private int patientPerPage;
 
 	private DelegatingVariableResolver resolver;
 	private PatientDAO patientDAO;
@@ -64,6 +64,7 @@ public class PatientManagementComposer extends GenericAutowireComposer {
 		composerUtil = (ComposerUtil) resolver.resolveVariable("composerUtil");
 		messageUtil = (MessageUtil) resolver.resolveVariable("messageUtil");
 		patientPopup = new PatientPopup();
+		patientPerPage = Util.getProperties("patientPerPage", 10);
 	}
 
 	@Override
@@ -215,14 +216,13 @@ public class PatientManagementComposer extends GenericAutowireComposer {
 			row.appendChild(addressLabel);
 			final Button actionButton = new Button(Labels.getLabel("action"));
 			row.appendChild(actionButton);
-			actionButton.setContext(patientPopup);
+			actionButton.setPopup(patientPopup);
 			actionButton.addEventListener(Events.ON_CLICK, new SerializableEventListener() {
 				private static final long serialVersionUID = 397400302626807931L;
 
 				@Override
 				public void onEvent(Event arg0) throws Exception {
 					patientPopup.setPatient(patient);
-					patientPopup.open(actionButton);
 				}
 			});
 		}

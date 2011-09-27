@@ -15,6 +15,8 @@ public class User implements Serializable {
 	private String realName;
 	private String password;
 
+	private boolean admin;
+
 	private String language = "vn";
 
 	public User() {
@@ -84,4 +86,13 @@ public class User implements Serializable {
 		}
 		return false;
 	}
+
+	public boolean isAdmin() {
+		return admin;
+	}
+
+	public void setAdmin(boolean isAdmin) {
+		this.admin = isAdmin;
+	}
+
 }
