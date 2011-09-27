@@ -1,0 +1,35 @@
+<?page title="${c:l('app.title')" contentType="text/html;charset=UTF-8"?>
+<?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
+
+<zk xmlns:w="client">
+	<window title="${c:l('add-user')}" border="normal" closable="true" width="400px" apply="com.lkc.controllers.LoginComposer">
+		<script type="text/javascript" src="/js/hash.js" />
+		<script type="text/javascript" src="/js/md5.js" />
+		<script type="text/javascript" src="/js/sha.js" />
+		<grid>
+			<columns>
+				<column />
+				<column />
+				<column />
+			</columns>
+			<rows>
+				<row>
+					<label value="${c:l('username')}: " />
+					<textbox id="usernameTextbox" />
+				</row>
+				<row>
+					<label value="${c:l('password')}: " />
+					<textbox id="passwordTextbox" type="password"
+						w:onChange="hashpassword(this.$f('passwordTextbox'),this.$f('hiddenPasswordTexbox'));" />
+					<textbox id="hiddenPasswordTexbox" type="password" visible="false" />
+				</row>
+				<row spans="2">
+					<hlayout>
+						<button id="loginButton" label="${c:l('login')}" />
+						<button id="closeButton" label="${c:l('close')}" />
+					</hlayout>
+				</row>
+			</rows>
+		</grid>
+	</window>
+</zk>

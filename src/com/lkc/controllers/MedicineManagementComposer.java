@@ -41,7 +41,7 @@ public class MedicineManagementComposer extends GenericAutowireComposer {
 	private Paging medicinePaging;
 	private int currentPage = 1;
 	private int numOfPage = 1;
-	private int medicinePerPage = 10;
+	private int medicinePerPage;
 
 	private DelegatingVariableResolver resolver;
 	private MedicineDAO medicineDAO;
@@ -53,6 +53,7 @@ public class MedicineManagementComposer extends GenericAutowireComposer {
 		medicineDAO = (MedicineDAO) resolver.resolveVariable("medicineDAO");
 		composerUtil = (ComposerUtil) resolver.resolveVariable("composerUtil");
 		messageUtil = (MessageUtil) resolver.resolveVariable("messageUtil");
+		medicinePerPage = Util.getProperties("medicinePerPage", 10);
 	}
 
 	@Override
