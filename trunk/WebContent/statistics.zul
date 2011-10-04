@@ -2,7 +2,7 @@
 <?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
 
 <zk>
-	<window title="${c:l('statistics')}" border="normal" width="500px" apply="com.lkc.controllers.StatisticsComposer">
+	<window title="" border="none" width="560px" apply="com.lkc.controllers.StatisticsComposer">
 		<panel border="normal" title="${c:l('statistics-data')}" style="margin-top:10px;" collapsible="true">
 			<panelchildren>
 				<grid>
@@ -13,13 +13,13 @@
 					<rows>
 						<row>
 							<label value="${c:l('from-date')}: " />
-							<datebox format="medium" locale="vi" id="fromDatebox" width="90%" />
+							<datebox format="medium" locale="vi" id="fromDatebox" width="250px" />
 						</row>
 						<row>
 							<label value="${c:l('to-date')}: " />
-							<datebox format="medium" locale="vi" id="toDatebox" width="90%" />
+							<datebox format="medium" locale="vi" id="toDatebox" width="250px" />
 						</row>
-						<row spans="2">
+						<row spans="2" style="text-align: center;">
 							<button label="${c:l('process')}" id="process" />
 						</row>
 					</rows>

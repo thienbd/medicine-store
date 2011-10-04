@@ -2,7 +2,7 @@
 <?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
 
 <zk>
-	<window title="${c:l('medicine-management')}" border="normal" apply="com.lkc.controllers.MedicineManagementComposer">
+	<window title="${c:l('medicine-management')}" border="normal" apply="com.lkc.controllers.MedicineManagementComposer" width="700px">
 		<vlayout>
 			<hlayout>
 				<label value="${c:l('search-medicine')}:" />

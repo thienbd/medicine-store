@@ -11,7 +11,7 @@ import org.zkoss.zul.Button;
 import org.zkoss.zul.Textbox;
 
 import com.lkc.dao.UserDAO;
-import com.lkc.entities.User;
+import com.lkc.entities.MyUser;
 import com.lkc.utils.MessageUtil;
 import com.lkc.utils.Util;
 
@@ -31,6 +31,7 @@ public class LoginComposer extends GenericAutowireComposer {
 	public LoginComposer() {
 		resolver = Util.getSpringDelegatingVariableResolver();
 		userDAO = (UserDAO) resolver.resolveVariable("userDAO");
+		messageUtil = (MessageUtil) resolver.resolveVariable("messageUtil");
 	}
 
 	@Override
@@ -57,7 +58,7 @@ public class LoginComposer extends GenericAutowireComposer {
 			public void onEvent(Event arg0) throws Exception {
 				String userName = usernameTextbox.getValue();
 				String password = hiddenPasswordTexbox.getValue();
-				User user = userDAO.login(userName, password);
+				MyUser user = userDAO.login(userName, password);
 				session.setAttribute("loginedUser", user);
 				if (user == null) {
 					messageUtil.showError(Labels.getLabel("fail"), Labels.getLabel("invalid-login"));

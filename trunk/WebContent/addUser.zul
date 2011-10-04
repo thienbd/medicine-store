@@ -33,7 +33,8 @@
 				</row>
 				<row spans="2" style="text-align:center;">
 					<hlayout>
-						<button id="createButton" label="${c:l('create-user')}" />
+						<button id="createButton" label="${c:l('create-user')}"
+							w:onClick="hashpassword(this.$f('passwordTextbox'),this.$f('hiddenPasswordTexbox'))" />
 						<button id="closeButton" label="${c:l('close')}" />
 					</hlayout>
 				</row>
