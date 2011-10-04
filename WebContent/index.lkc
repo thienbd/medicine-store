@@ -1,8 +1,9 @@
 <?page title="${c:l('app.title')}" contentType="text/html;charset=UTF-8"?>
 <?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
 
-<zk xmlns:h="xhtml">
+<zk xmlns:h="xhtml" xmlns:n="native">
 	<style src="/css/main.css"></style>
+	<style src="/css/ui.css"></style>
 	<h:table width="100%">
 		<h:tr>
 			<h:td width="100%" align="center">
@@ -10,10 +11,12 @@
 					<a id="bannerLink">
 						<image src="/images/banner.jpg" height="200px" width="100%" />
 					</a>
-					<vlayout>
-
+					<vlayout style="margin-top:5px;">
 					</vlayout>
-					<div width="98%" style="margin-top:20px;" sclass="bottom">
+					<h:div style="text-align:center;margin-top:20px;">
+						<image src="/images/vertical_seperator.gif" />
+					</h:div>
+					<div width="98%" sclass="bottom">
 						<h:table width="100%">
 							<h:tr>
 								<h:td>
