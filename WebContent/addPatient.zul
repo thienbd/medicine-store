@@ -3,7 +3,8 @@
 
 <zk xmlns:h="xhtml">
 
-	<window title="${c:l('input-patient')}" border="normal" apply="com.lkc.controllers.AddPatientComposer" position="center">
+	<window title="${c:l('input-patient')}" border="normal" apply="com.lkc.controllers.AddPatientComposer" position="center"
+		width="840px">
 		<style src="/css/main.css" />
 		<vbox>
 			<hbox width="800px">
@@ -22,8 +23,8 @@
 							<datebox id="dateOfBirthDatebox" width="80%" mold="rounded" format="medium" locale="vi" />
 						</row>
 						<row>
-							<label value="${c:l('phone')}: "/>
-							<textbox id="phoneTextbox" width="80%"/>
+							<label value="${c:l('phone')}: " />
+							<textbox id="phoneTextbox" width="80%" />
 						</row>
 					</rows>
 				</grid>
@@ -53,14 +54,14 @@
 
 						</rows>
 					</grid>
-					<label id="examTotalCost"/>
+					<label id="examTotalCost" />
 				</panelchildren>
 			</panel>
 			<h:div style="margin-top:5px;text-align:center;">
 				<hlayout>
 					<button label="${c:l('save')}" id="saveButton" />
 					<button label="${c:l('clear')}" id="clearButton" />
-					<button label="${c:l('export')}" id="exportButton"/>
+					<button label="${c:l('export')}" id="exportButton" />
 				</hlayout>
 			</h:div>
 		</vbox>

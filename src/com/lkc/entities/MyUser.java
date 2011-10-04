@@ -5,8 +5,8 @@ import java.io.Serializable;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 
-@Entity(name = "MyUser")
-public class User implements Serializable {
+@Entity
+public class MyUser implements Serializable {
 	private static final long serialVersionUID = 2019084101580715360L;
 
 	@Id
@@ -17,21 +17,21 @@ public class User implements Serializable {
 
 	private boolean admin;
 
-	private String language = "vn";
+	private String language = "vi";
 
-	public User() {
+	public MyUser() {
 		this(0);
 	}
 
-	public User(long id) {
+	public MyUser(long id) {
 		this(id, "", "");
 	}
 
-	public User(long id, String userName, String password) {
+	public MyUser(long id, String userName, String password) {
 		this(id, userName, "", password);
 	}
 
-	public User(long id, String userName, String realName, String password) {
+	public MyUser(long id, String userName, String realName, String password) {
 		this.id = id;
 		this.userName = userName;
 		this.realName = realName;
@@ -80,8 +80,8 @@ public class User implements Serializable {
 
 	@Override
 	public boolean equals(Object obj) {
-		if ((obj != null) && (obj instanceof User)) {
-			User that = (User) obj;
+		if ((obj != null) && (obj instanceof MyUser)) {
+			MyUser that = (MyUser) obj;
 			return this.id == that.id;
 		}
 		return false;

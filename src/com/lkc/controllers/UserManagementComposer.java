@@ -23,7 +23,7 @@ import org.zkoss.zul.Vlayout;
 import org.zkoss.zul.Window;
 
 import com.lkc.dao.UserDAO;
-import com.lkc.entities.User;
+import com.lkc.entities.MyUser;
 import com.lkc.utils.ComposerUtil;
 import com.lkc.utils.MessageUtil;
 import com.lkc.utils.Util;
@@ -46,7 +46,7 @@ public class UserManagementComposer extends GenericAutowireComposer {
 	private UserPopup userPopup;
 	private Component component;
 	private MessageUtil messageUtil;
-	private User currentUser;
+	private MyUser currentUser;
 
 	public UserManagementComposer() {
 		resolver = Util.getSpringDelegatingVariableResolver();
@@ -84,8 +84,8 @@ public class UserManagementComposer extends GenericAutowireComposer {
 			}
 		}
 		userPaging.setVisible(numOfUserPage > 1);
-		List<User> listUsers = new ArrayList<User>();
-		for (final User user : listUsers) {
+		List<MyUser> listUsers = new ArrayList<MyUser>();
+		for (final MyUser user : listUsers) {
 			Row row = new Row();
 			userRows.appendChild(row);
 			Label useridLabel = new Label(String.valueOf(user.getId()));
@@ -119,7 +119,7 @@ public class UserManagementComposer extends GenericAutowireComposer {
 		private A deleteUserLink;
 
 		private Vlayout vlayout;
-		private User user;
+		private MyUser user;
 
 		public UserPopup() {
 			vlayout = new Vlayout();
@@ -164,11 +164,11 @@ public class UserManagementComposer extends GenericAutowireComposer {
 			this.vlayout = vlayout;
 		}
 
-		public User getUser() {
+		public MyUser getUser() {
 			return user;
 		}
 
-		public void setUser(User user) {
+		public void setUser(MyUser user) {
 			this.user = user;
 		}
 
@@ -208,7 +208,7 @@ public class UserManagementComposer extends GenericAutowireComposer {
 
 			@Override
 			public void onEvent(Event arg0) throws Exception {
-				User user = userPopup.getUser();
+				MyUser user = userPopup.getUser();
 				Map<String, Object> params = new HashMap<String, Object>();
 				params.put(ComposerUtil.ACTION_KEY, new ActionTrigger() {
 					private static final long serialVersionUID = -4693653250967067484L;
@@ -239,7 +239,7 @@ public class UserManagementComposer extends GenericAutowireComposer {
 
 			@Override
 			public void onEvent(Event arg0) throws Exception {
-				final User user = userPopup.getUser();
+				final MyUser user = userPopup.getUser();
 				messageUtil.showConfirm(Labels.getLabel("confirm"),
 						Labels.getLabel("confirm-delete-user", new Object[] { user.getRealName() }), new ActionTrigger() {
 

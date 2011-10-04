@@ -4,6 +4,7 @@
 <zk xmlns:h="xhtml" xmlns:n="native">
 	<style src="/css/main.css"></style>
 	<style src="/css/ui.css"></style>
+	
 	<h:table width="100%">
 		<h:tr>
 			<h:td width="100%" align="center">
@@ -12,6 +13,26 @@
 						<image src="/images/banner.jpg" height="200px" width="100%" />
 					</a>
 					<vlayout style="margin-top:5px;">
+						<menubar id="menubar">
+							<menuitem label="${c:l('patient-management')}" id="patientManagementMenuitem" />
+							<menuitem label="${c:l('medicine-management')}" id="medicineManagementMenuitem" />
+							<menuitem label="${c:l('statistics')}" id="statisticsMenuitem" />
+							<menu label="${c:l('welcome')}" id="welcomeMenuitem">
+								<menupopup>
+									<menuitem label="${c:l('login')}" id="loginMenuitem" />
+									<menuitem label="${c:l('logout')}" id="logoutMenuitem" />
+									<menuitem label="${c:l('manage-user')}" id="usermanagementMenuitem" />
+								</menupopup>
+							</menu>
+						</menubar>
+						<n:table width="100%">
+							<n:tr>
+								<n:td align="center">
+									<image src="/images/vertical_seperator.gif" style="margin-bottom:5px;" />
+									<include id="pageInclude" />
+								</n:td>
+							</n:tr>
+						</n:table>
 					</vlayout>
 					<h:div style="text-align:center;margin-top:20px;">
 						<image src="/images/vertical_seperator.gif" />

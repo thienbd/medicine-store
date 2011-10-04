@@ -2,7 +2,7 @@
 <?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
 
 <zk xmlns:w="client">
-	<window title="${c:l('add-user')}" border="normal" closable="true" width="400px" apply="com.lkc.controllers.LoginComposer">
+	<window title="${c:l('login')}" border="normal" closable="true" width="400px" apply="com.lkc.controllers.LoginComposer">
 		<script type="text/javascript" src="/js/hash.js" />
 		<script type="text/javascript" src="/js/md5.js" />
 		<script type="text/javascript" src="/js/sha.js" />
@@ -24,7 +24,8 @@
 				</row>
 				<row spans="2" style="text-align:center;">
 					<hlayout>
-						<button id="loginButton" label="${c:l('login')}" />
+						<button id="loginButton" label="${c:l('login')}"
+							w:onClick="hashpassword(this.$f('passwordTextbox'),this.$f('hiddenPasswordTexbox'))" />
 						<button id="closeButton" label="${c:l('close')}" />
 					</hlayout>
 				</row>

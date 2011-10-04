@@ -9,25 +9,25 @@ import org.hibernate.Session;
 import org.springframework.orm.hibernate3.HibernateCallback;
 import org.springframework.orm.hibernate3.HibernateTemplate;
 
-import com.lkc.entities.User;
+import com.lkc.entities.MyUser;
 
 @SuppressWarnings("unchecked")
-public class UserDAO extends GenericDAO<User> {
+public class UserDAO extends GenericDAO<MyUser> {
 
 	public UserDAO() {
-		super(User.class);
+		super(MyUser.class);
 	}
 
-	public User login(final String userName, final String password) {
+	public MyUser login(final String userName, final String password) {
 		HibernateTemplate hibernateTemplate = getHibernateTemplate();
-		User result = hibernateTemplate.execute(new HibernateCallback<User>() {
+		MyUser result = hibernateTemplate.execute(new HibernateCallback<MyUser>() {
 			@Override
-			public User doInHibernate(Session session) throws HibernateException, SQLException {
-				String sql = "from User where userName=:userName and password=:password";
+			public MyUser doInHibernate(Session session) throws HibernateException, SQLException {
+				String sql = "from " + entityBeanType.getSimpleName() + " usr where usr.userName=:userName and usr.password=:password";
 				Query query = session.createQuery(sql);
 				query.setString("userName", userName);
 				query.setString("password", password);
-				List<User> users = query.list();
+				List<MyUser> users = query.list();
 				if (users.size() == 1) {
 					return users.get(0);
 				}
@@ -37,16 +37,16 @@ public class UserDAO extends GenericDAO<User> {
 		return result;
 	}
 
-	public User login(final long userId, final String password) {
+	public MyUser login(final long userId, final String password) {
 		HibernateTemplate hibernateTemplate = getHibernateTemplate();
-		User result = hibernateTemplate.execute(new HibernateCallback<User>() {
+		MyUser result = hibernateTemplate.execute(new HibernateCallback<MyUser>() {
 			@Override
-			public User doInHibernate(Session session) throws HibernateException, SQLException {
-				String sql = "from User where id=:userId and password=:password";
+			public MyUser doInHibernate(Session session) throws HibernateException, SQLException {
+				String sql = "from " + entityBeanType.getSimpleName() + " usr where usr.id=:userId and usr.password=:password";
 				Query query = session.createQuery(sql);
 				query.setLong("userId", userId);
 				query.setString("password", password);
-				List<User> users = query.list();
+				List<MyUser> users = query.list();
 				if (users.size() == 1) {
 					return users.get(0);
 				}

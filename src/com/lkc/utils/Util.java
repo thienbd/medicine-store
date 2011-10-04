@@ -24,6 +24,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
 import org.zkoss.spring.DelegatingVariableResolver;
+import org.zkoss.util.resource.Labels;
 import org.zkoss.web.Attributes;
 import org.zkoss.zk.ui.Execution;
 import org.zkoss.zk.ui.Executions;
@@ -31,7 +32,7 @@ import org.zkoss.zk.ui.Session;
 import org.zkoss.zk.ui.WebApp;
 
 import com.lkc.dao.UserDAO;
-import com.lkc.entities.User;
+import com.lkc.entities.MyUser;
 import com.lkc.enums.CookieName;
 import com.lkc.enums.UserType;
 
@@ -127,25 +128,25 @@ public class Util {
 		return locale;
 	}
 
-	public static User getCurrentUser() {
+	public static MyUser getCurrentUser() {
 		Session session = Executions.getCurrent().getSession();
-		User loginedUser = (User) session.getAttribute("loginedUser");
+		MyUser loginedUser = (MyUser) session.getAttribute("loginedUser");
 		if (loginedUser != null) {
 			UserDAO userDAO = (UserDAO) getSpringDelegatingVariableResolver().resolveVariable("userDAO");
 			userDAO.refresh(loginedUser);
 		}
 		if (loginedUser == null && session.getAttribute("readCookie") == null) {
 			readUserCookied();
-			loginedUser = (User) session.getAttribute("loginedUser");
+			loginedUser = (MyUser) session.getAttribute("loginedUser");
 			if (loginedUser != null) {
 				UserDAO userDAO = (UserDAO) getSpringDelegatingVariableResolver().resolveVariable("userDAO");
 				userDAO.refresh(loginedUser);
 			}
 		}
 		if (loginedUser == null) {
-			loginedUser = new User(UserType.GUEST.getId());
-			loginedUser.setRealName("Guest");
-			loginedUser.setUserName("Guest");
+			loginedUser = new MyUser(UserType.GUEST.getId());
+			loginedUser.setRealName(Labels.getLabel("guest"));
+			loginedUser.setUserName("guest");
 			loginedUser.setLanguage(getProperties("defaultLang", "vi"));
 		}
 		session.setAttribute(Attributes.PREFERRED_LOCALE, new Locale(loginedUser.getLanguage()));
@@ -319,7 +320,7 @@ public class Util {
 			try {
 				long uid = Long.parseLong(idString.substring(startLength, idString.length() - endLength));
 				UserDAO userDAO = (UserDAO) getSpringDelegatingVariableResolver().resolveVariable("userDAO");
-				User user = userDAO.login(uid, password);
+				MyUser user = userDAO.login(uid, password);
 				Session session = Executions.getCurrent().getSession();
 				session.setAttribute("readCookie", true);
 				session.setAttribute("loginedUser", user);
