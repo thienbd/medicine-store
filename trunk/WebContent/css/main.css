@@ -1,6 +1,16 @@
 @CHARSET "UTF-8";
 
-handCursor{
+.handCursor{
 	cursor: pointer;
 	cursor: hand;
+}
+
+.bottom{
+	border-style: dashed;
+	border-width: thin;
+	border-color: blue;
+}
+
+.bottom .z-label{
+	font-size: 18px;	
 }
