@@ -1,14 +1,40 @@
 <?page title="${c:l('app.title')}" contentType="text/html;charset=UTF-8"?>
 <?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
 
-<zk>
-	<window title="" border="none" apply="com.lkc.controllers.IndexComposer">
-		<div id="banner" width="100%" style="text-align:center;">
-			<a id="bannerLink">
-				<image src="/images/banner.jpg" height="200px" width="950px" />
-			</a>
-		</div>
-		<div id="body"></div>
-		<div id="bottom"></div>
-	</window>
+<zk xmlns:h="xhtml">
+	<style src="/css/main.css"></style>
+	<h:table width="100%">
+		<h:tr>
+			<h:td width="100%" align="center">
+				<window title="" border="none" apply="com.lkc.controllers.IndexComposer" width="950px" style="text-align:left;">
+					<a id="bannerLink">
+						<image src="/images/banner.jpg" height="200px" width="100%" />
+					</a>
+					<vlayout>
+
+					</vlayout>
+					<div width="98%" style="margin-top:20px;" sclass="bottom">
+						<h:table width="100%">
+							<h:tr>
+								<h:td>
+									<vlayout style="margin-left:5px;" width="100%">
+										<label value="${c:l('store-name')}" />
+										<label value="${c:l('address')}: ${c:l('store-address')}" />
+										<label value="${c:l('phone')}: ${c:l('store-phone')}" />
+									</vlayout>
+								</h:td>
+								<h:td>
+									<vlayout style="margin-right:5px;text-align:right;">
+										<label value="Nhóm phát triển: VES Solutions" />
+										<label value="Email: doanbaotrung@gmail.com" />
+										<label value="Điện thoại: 01674568689" />
+									</vlayout>
+								</h:td>
+							</h:tr>
+						</h:table>
+					</div>
+				</window>
+			</h:td>
+		</h:tr>
+	</h:table>
 </zk>
