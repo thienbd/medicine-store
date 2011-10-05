@@ -20,7 +20,7 @@ import com.lkc.constraints.NoEmptyTextConstraint;
 import com.lkc.constraints.PatternConstraint;
 import com.lkc.entities.Examination;
 import com.lkc.entities.Patient;
-import com.lkc.entities.MyUser;
+import com.lkc.entities.Doctor;
 import com.lkc.utils.ComposerUtil;
 import com.lkc.utils.MessageUtil;
 import com.lkc.utils.Util;
@@ -103,7 +103,7 @@ public class AddExaminationComposer extends GenericAutowireComposer {
 			@Override
 			public void onEvent(Event arg0) throws Exception {
 				try {
-					MyUser currentUser = Util.getCurrentUser();
+					Doctor currentUser = Util.getCurrentUser();
 					Calendar examDate = new GregorianCalendar();
 					examDate.setTime(examDateDatebox.getValue());
 					Calendar nextAppoint = new GregorianCalendar();

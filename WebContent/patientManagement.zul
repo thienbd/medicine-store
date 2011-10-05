@@ -16,7 +16,9 @@
 					<column label="${c:l('dateOfBirth')}" width="100px" />
 					<column label="${c:l('phone')}" width="100px"/>
 					<column label="${c:l('address')}" />
-					<column width="130px" />
+					<column width="130px" >
+						<button label="${c:l('input-patient')}" id="addPatientButton"/>
+					</column>
 				</columns>
 				<rows id="patientRows">
 

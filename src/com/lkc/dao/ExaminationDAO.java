@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
+import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.springframework.orm.hibernate3.HibernateCallback;
 import org.springframework.orm.hibernate3.HibernateTemplate;
@@ -97,6 +98,20 @@ public class ExaminationDAO extends GenericDAO<Examination> {
 				} else {
 					return null;
 				}
+			}
+		});
+		return result;
+	}
+
+	public int deleteAllByPatient(final Patient patient) {
+		HibernateTemplate hibernateTemplate = getHibernateTemplate();
+		int result = hibernateTemplate.execute(new HibernateCallback<Integer>() {
+			@Override
+			public Integer doInHibernate(Session session) throws HibernateException, SQLException {
+				String sql = "delete from " + entityBeanType.getSimpleName() + " where patient_id=:patient_id";
+				SQLQuery query = session.createSQLQuery(sql);
+				query.setLong("patient_id", patient.getId());
+				return query.executeUpdate();
 			}
 		});
 		return result;

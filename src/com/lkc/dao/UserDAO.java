@@ -9,25 +9,25 @@ import org.hibernate.Session;
 import org.springframework.orm.hibernate3.HibernateCallback;
 import org.springframework.orm.hibernate3.HibernateTemplate;
 
-import com.lkc.entities.MyUser;
+import com.lkc.entities.Doctor;
 
 @SuppressWarnings("unchecked")
-public class UserDAO extends GenericDAO<MyUser> {
+public class UserDAO extends GenericDAO<Doctor> {
 
 	public UserDAO() {
-		super(MyUser.class);
+		super(Doctor.class);
 	}
 
-	public MyUser login(final String userName, final String password) {
+	public Doctor login(final String userName, final String password) {
 		HibernateTemplate hibernateTemplate = getHibernateTemplate();
-		MyUser result = hibernateTemplate.execute(new HibernateCallback<MyUser>() {
+		Doctor result = hibernateTemplate.execute(new HibernateCallback<Doctor>() {
 			@Override
-			public MyUser doInHibernate(Session session) throws HibernateException, SQLException {
+			public Doctor doInHibernate(Session session) throws HibernateException, SQLException {
 				String sql = "from " + entityBeanType.getSimpleName() + " usr where usr.userName=:userName and usr.password=:password";
 				Query query = session.createQuery(sql);
 				query.setString("userName", userName);
 				query.setString("password", password);
-				List<MyUser> users = query.list();
+				List<Doctor> users = query.list();
 				if (users.size() == 1) {
 					return users.get(0);
 				}
@@ -37,16 +37,16 @@ public class UserDAO extends GenericDAO<MyUser> {
 		return result;
 	}
 
-	public MyUser login(final long userId, final String password) {
+	public Doctor login(final long userId, final String password) {
 		HibernateTemplate hibernateTemplate = getHibernateTemplate();
-		MyUser result = hibernateTemplate.execute(new HibernateCallback<MyUser>() {
+		Doctor result = hibernateTemplate.execute(new HibernateCallback<Doctor>() {
 			@Override
-			public MyUser doInHibernate(Session session) throws HibernateException, SQLException {
+			public Doctor doInHibernate(Session session) throws HibernateException, SQLException {
 				String sql = "from " + entityBeanType.getSimpleName() + " usr where usr.id=:userId and usr.password=:password";
 				Query query = session.createQuery(sql);
 				query.setLong("userId", userId);
 				query.setString("password", password);
-				List<MyUser> users = query.list();
+				List<Doctor> users = query.list();
 				if (users.size() == 1) {
 					return users.get(0);
 				}

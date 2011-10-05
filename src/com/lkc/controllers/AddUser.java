@@ -17,7 +17,7 @@ import org.zkoss.zul.Textbox;
 
 import com.lkc.constraints.NoEmptyTextConstraint;
 import com.lkc.dao.UserDAO;
-import com.lkc.entities.MyUser;
+import com.lkc.entities.Doctor;
 import com.lkc.utils.ComposerUtil;
 import com.lkc.utils.MessageUtil;
 import com.lkc.utils.Util;
@@ -38,10 +38,10 @@ public class AddUser extends GenericAutowireComposer {
 	private Component component;
 	private DelegatingVariableResolver resolver;
 	private UserDAO userDAO;
-	private MyUser user;
+	private Doctor user;
 	private ActionTrigger actionTrigger;
 	private MessageUtil messageUtil;
-	private MyUser currentUser;
+	private Doctor currentUser;
 
 	public AddUser() {
 		resolver = Util.getSpringDelegatingVariableResolver();
@@ -58,7 +58,7 @@ public class AddUser extends GenericAutowireComposer {
 		if (currentUser.isAdmin()) {
 			// Args
 			Map<String, Object> args = execution.getArg();
-			user = (MyUser) args.get(ComposerUtil.USER_KEY);
+			user = (Doctor) args.get(ComposerUtil.USER_KEY);
 			actionTrigger = (ActionTrigger) args.get(ComposerUtil.ACTION_KEY);
 			if (user != null) {
 				usernameTextbox.setValue(user.getUserName());
@@ -96,7 +96,7 @@ public class AddUser extends GenericAutowireComposer {
 				String realName = realNameTextbox.getValue();
 				boolean isAdmin = admincheckbox.isChecked();
 				if (user == null) {
-					user = new MyUser(System.currentTimeMillis());
+					user = new Doctor(System.currentTimeMillis());
 				}
 				try {
 					user.setUserName(username);

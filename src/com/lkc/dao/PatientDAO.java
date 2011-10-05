@@ -8,8 +8,11 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.springframework.orm.hibernate3.HibernateCallback;
 import org.springframework.orm.hibernate3.HibernateTemplate;
+import org.zkoss.zkplus.spring.DelegatingVariableResolver;
 
+import com.lkc.entities.Examination;
 import com.lkc.entities.Patient;
+import com.lkc.utils.Util;
 
 @SuppressWarnings("unchecked")
 public class PatientDAO extends GenericDAO<Patient> {
@@ -63,4 +66,18 @@ public class PatientDAO extends GenericDAO<Patient> {
 		});
 		return result;
 	}
+
+	@Override
+	public void delete(Patient entity) {
+		DelegatingVariableResolver resolver = Util.getSpringDelegatingVariableResolver();
+		ExaminationDAO examinationDAO = (ExaminationDAO) resolver.resolveVariable("examinationDAO");
+		ExaminationDetailDAO examinationDetailDAO = (ExaminationDetailDAO) resolver.resolveVariable("examinationDetailDAO");
+		List<Examination> examinations = examinationDAO.loadByPatient(entity);
+		for (Examination examination : examinations) {
+			examinationDetailDAO.deleteAllByExamination(examination);
+		}
+		examinationDAO.deleteAllByPatient(entity);
+		super.delete(entity);
+	}
+
 }

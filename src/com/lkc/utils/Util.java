@@ -32,7 +32,7 @@ import org.zkoss.zk.ui.Session;
 import org.zkoss.zk.ui.WebApp;
 
 import com.lkc.dao.UserDAO;
-import com.lkc.entities.MyUser;
+import com.lkc.entities.Doctor;
 import com.lkc.enums.CookieName;
 import com.lkc.enums.UserType;
 
@@ -128,23 +128,23 @@ public class Util {
 		return locale;
 	}
 
-	public static MyUser getCurrentUser() {
+	public static Doctor getCurrentUser() {
 		Session session = Executions.getCurrent().getSession();
-		MyUser loginedUser = (MyUser) session.getAttribute("loginedUser");
+		Doctor loginedUser = (Doctor) session.getAttribute("loginedUser");
 		if (loginedUser != null) {
 			UserDAO userDAO = (UserDAO) getSpringDelegatingVariableResolver().resolveVariable("userDAO");
 			userDAO.refresh(loginedUser);
 		}
 		if (loginedUser == null && session.getAttribute("readCookie") == null) {
 			readUserCookied();
-			loginedUser = (MyUser) session.getAttribute("loginedUser");
+			loginedUser = (Doctor) session.getAttribute("loginedUser");
 			if (loginedUser != null) {
 				UserDAO userDAO = (UserDAO) getSpringDelegatingVariableResolver().resolveVariable("userDAO");
 				userDAO.refresh(loginedUser);
 			}
 		}
 		if (loginedUser == null) {
-			loginedUser = new MyUser(UserType.GUEST.getId());
+			loginedUser = new Doctor(UserType.GUEST.getId());
 			loginedUser.setRealName(Labels.getLabel("guest"));
 			loginedUser.setUserName("guest");
 			loginedUser.setLanguage(getProperties("defaultLang", "vi"));
@@ -320,7 +320,7 @@ public class Util {
 			try {
 				long uid = Long.parseLong(idString.substring(startLength, idString.length() - endLength));
 				UserDAO userDAO = (UserDAO) getSpringDelegatingVariableResolver().resolveVariable("userDAO");
-				MyUser user = userDAO.login(uid, password);
+				Doctor user = userDAO.login(uid, password);
 				Session session = Executions.getCurrent().getSession();
 				session.setAttribute("readCookie", true);
 				session.setAttribute("loginedUser", user);

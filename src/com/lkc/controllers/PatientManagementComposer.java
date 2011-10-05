@@ -46,6 +46,7 @@ public class PatientManagementComposer extends GenericAutowireComposer {
 	private boolean searched = false;
 	private String searchData = "";
 
+	private Button addPatientButton;
 	private Rows patientRows;
 	private Paging patientPaging;
 	private int currentPage = 1;
@@ -187,6 +188,26 @@ public class PatientManagementComposer extends GenericAutowireComposer {
 				}
 			}
 		});
+		addPatientButton.addEventListener(Events.ON_CLICK, new SerializableEventListener() {
+			private static final long serialVersionUID = 4143868519764066532L;
+
+			@Override
+			public void onEvent(Event arg0) throws Exception {
+				Map<String, Object> params = new HashMap<String, Object>();
+				params.put(ComposerUtil.ACTION_KEY, refreshActionTrigger);
+				Window window = (Window) execution.createComponents("/addPatient.zul", component, params);
+				try {
+					window.setClosable(true);
+					window.doModal();
+				} catch (Exception e) {
+					e.printStackTrace();
+					try {
+						window.detach();
+					} catch (Exception ex) {
+					}
+				}
+			}
+		});
 	}
 
 	private void refreshPatients() {
@@ -235,13 +256,16 @@ public class PatientManagementComposer extends GenericAutowireComposer {
 		} else {
 			count = patientDAO.count();
 		}
+		addPatientButton.setVisible(count <= 0);
 		numOfPage = (int) (count / patientPerPage + (count % patientPerPage > 0 ? 1 : 0));
+		if (numOfPage == 0) {
+			numOfPage = 1;
+		}
 		if (currentPage > numOfPage) {
 			currentPage = numOfPage;
-		} else {
-			if (currentPage < 1) {
-				currentPage = 1;
-			}
+		}
+		if (currentPage < 1) {
+			currentPage = 1;
 		}
 		patientPaging.setTotalSize(numOfPage);
 		patientPaging.setPageSize(1);

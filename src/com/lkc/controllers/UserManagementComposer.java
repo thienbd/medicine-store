@@ -1,6 +1,5 @@
 package com.lkc.controllers;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,7 +22,7 @@ import org.zkoss.zul.Vlayout;
 import org.zkoss.zul.Window;
 
 import com.lkc.dao.UserDAO;
-import com.lkc.entities.MyUser;
+import com.lkc.entities.Doctor;
 import com.lkc.utils.ComposerUtil;
 import com.lkc.utils.MessageUtil;
 import com.lkc.utils.Util;
@@ -46,7 +45,7 @@ public class UserManagementComposer extends GenericAutowireComposer {
 	private UserPopup userPopup;
 	private Component component;
 	private MessageUtil messageUtil;
-	private MyUser currentUser;
+	private Doctor currentUser;
 
 	public UserManagementComposer() {
 		resolver = Util.getSpringDelegatingVariableResolver();
@@ -76,6 +75,9 @@ public class UserManagementComposer extends GenericAutowireComposer {
 	private void refresh() {
 		long count = userDAO.count();
 		numOfUserPage = (int) (count / userPerPage + (count % userPerPage > 0 ? 1 : 0));
+		if (numOfUserPage == 0) {
+			numOfUserPage = 1;
+		}
 		if (currentUserPage > numOfUserPage) {
 			currentUserPage = numOfUserPage;
 		} else {
@@ -84,8 +86,8 @@ public class UserManagementComposer extends GenericAutowireComposer {
 			}
 		}
 		userPaging.setVisible(numOfUserPage > 1);
-		List<MyUser> listUsers = new ArrayList<MyUser>();
-		for (final MyUser user : listUsers) {
+		List<Doctor> listUsers = userDAO.load((currentUserPage - 1) * userPerPage, userPerPage);
+		for (final Doctor user : listUsers) {
 			Row row = new Row();
 			userRows.appendChild(row);
 			Label useridLabel = new Label(String.valueOf(user.getId()));
@@ -119,7 +121,7 @@ public class UserManagementComposer extends GenericAutowireComposer {
 		private A deleteUserLink;
 
 		private Vlayout vlayout;
-		private MyUser user;
+		private Doctor user;
 
 		public UserPopup() {
 			vlayout = new Vlayout();
@@ -164,11 +166,11 @@ public class UserManagementComposer extends GenericAutowireComposer {
 			this.vlayout = vlayout;
 		}
 
-		public MyUser getUser() {
+		public Doctor getUser() {
 			return user;
 		}
 
-		public void setUser(MyUser user) {
+		public void setUser(Doctor user) {
 			this.user = user;
 		}
 
@@ -208,7 +210,7 @@ public class UserManagementComposer extends GenericAutowireComposer {
 
 			@Override
 			public void onEvent(Event arg0) throws Exception {
-				MyUser user = userPopup.getUser();
+				Doctor user = userPopup.getUser();
 				Map<String, Object> params = new HashMap<String, Object>();
 				params.put(ComposerUtil.ACTION_KEY, new ActionTrigger() {
 					private static final long serialVersionUID = -4693653250967067484L;
@@ -239,7 +241,7 @@ public class UserManagementComposer extends GenericAutowireComposer {
 
 			@Override
 			public void onEvent(Event arg0) throws Exception {
-				final MyUser user = userPopup.getUser();
+				final Doctor user = userPopup.getUser();
 				messageUtil.showConfirm(Labels.getLabel("confirm"),
 						Labels.getLabel("confirm-delete-user", new Object[] { user.getRealName() }), new ActionTrigger() {
 
