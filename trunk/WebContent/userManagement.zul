@@ -8,7 +8,7 @@
 				<column label="${c:l('id')}" />
 				<column label="${c:l('username')}" />
 				<column label="${c:l('realName')}" />
-				<column label="${c:l('admin')}:" />
+				<column label="${c:l('admin')}" />
 				<column />
 			</columns>
 			<rows id="userRows"></rows>

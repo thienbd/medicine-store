@@ -6,7 +6,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 
 @Entity
-public class MyUser implements Serializable {
+public class Doctor implements Serializable {
 	private static final long serialVersionUID = 2019084101580715360L;
 
 	@Id
@@ -19,19 +19,19 @@ public class MyUser implements Serializable {
 
 	private String language = "vi";
 
-	public MyUser() {
+	public Doctor() {
 		this(0);
 	}
 
-	public MyUser(long id) {
+	public Doctor(long id) {
 		this(id, "", "");
 	}
 
-	public MyUser(long id, String userName, String password) {
+	public Doctor(long id, String userName, String password) {
 		this(id, userName, "", password);
 	}
 
-	public MyUser(long id, String userName, String realName, String password) {
+	public Doctor(long id, String userName, String realName, String password) {
 		this.id = id;
 		this.userName = userName;
 		this.realName = realName;
@@ -80,8 +80,8 @@ public class MyUser implements Serializable {
 
 	@Override
 	public boolean equals(Object obj) {
-		if ((obj != null) && (obj instanceof MyUser)) {
-			MyUser that = (MyUser) obj;
+		if ((obj != null) && (obj instanceof Doctor)) {
+			Doctor that = (Doctor) obj;
 			return this.id == that.id;
 		}
 		return false;

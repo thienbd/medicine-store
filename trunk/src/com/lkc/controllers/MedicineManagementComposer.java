@@ -185,6 +185,9 @@ public class MedicineManagementComposer extends GenericAutowireComposer {
 			count = medicineDAO.count();
 		}
 		numOfPage = (int) (count / medicinePerPage + (count % medicinePerPage > 0 ? 1 : 0));
+		if (numOfPage == 0) {
+			numOfPage = 1;
+		}
 		if (currentPage > numOfPage) {
 			currentPage = numOfPage;
 		} else {

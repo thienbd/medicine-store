@@ -15,7 +15,7 @@ import org.zkoss.zul.Menu;
 import org.zkoss.zul.Menubar;
 import org.zkoss.zul.Menuitem;
 
-import com.lkc.entities.MyUser;
+import com.lkc.entities.Doctor;
 import com.lkc.enums.UserType;
 import com.lkc.utils.Util;
 
@@ -34,7 +34,7 @@ public class IndexComposer extends GenericAutowireComposer {
 	private Menuitem usermanagementMenuitem;
 
 	private Include pageInclude;
-	private MyUser currentUser;
+	private Doctor currentUser;
 
 	public IndexComposer() {
 
